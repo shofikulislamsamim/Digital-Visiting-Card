@@ -1,0 +1,6 @@
+{
+  "name": "Khan Digital Solution – Digital Visiting Card",
+  "description": "Production-ready responsive Digital Visiting Card and Business Profile web application for Khan Digital Solution with Supabase integration, admin panel, QR code, and vCard export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
