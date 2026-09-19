@@ -1415,27 +1415,11 @@ body {
 .connect-option-icon[data-platform="whatsapp"] { color:#25d366; background:rgba(37,211,102,.10); }
 .connect-option-icon[data-platform="youtube"] { color:#ff0000; background:rgba(255,0,0,.10); }
 .connect-option-icon[data-platform="tiktok"] { color:#fff; background:#000; }
-.connect-option-icon[data-platform="instagram"] { color:#fff; background:rgba(255,255,255,.05); }
+
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Connect Instagram uses the original multicolor Instagram logo */
+/* Connect Instagram keeps the original multicolor logo */
 .connect-option-icon[data-platform="instagram"] {
   color: #fff !important;
-  background: linear-gradient(135deg, #ffdd55 0%, #ff543e 32%, #c837ab 62%, #405de6 100%) !important;
-}
-.connect-option-icon[data-platform="instagram"] svg {
-  fill: none !important;
-  stroke: none !important;
-}
-.connect-option-icon[data-platform="instagram"] svg rect {
-  fill: url(#instagramGradient) !important;
-  stroke: none !important;
-}
-.connect-option-icon[data-platform="instagram"] svg circle:first-of-type {
-  fill: none !important;
-  stroke: #fff !important;
-}
-.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
-  fill: #fff !important;
-  stroke: none !important;
+  background: rgba(255,255,255,.05) !important;
 }
