@@ -420,166 +420,153 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
 async function generateLivePdf(data, options = {}) {
   try {
     const jsPDF = window.jspdf?.jsPDF;
-    if (!jsPDF) {
+    const html2canvas = window.html2canvas;
+    if (!jsPDF || !html2canvas) {
       showToast("PDF engine is still loading. Please try again.");
       return;
     }
 
-    const p = data?.personal || {};
-    const branding = data?.branding || {};
-    const phoneRaw = p.phoneFormatted || p.phone || "01744188460";
-    const phone = String(phoneRaw).replace(/[^\\d+]/g, "");
-    const phoneHref = phone.startsWith("+") ? phone : "+88" + phone.replace(/^0/, "");
-    const waRaw = String(p.whatsappFormatted || p.whatsapp || phoneRaw).replace(/[^\\d]/g, "");
-    const waHref = "https://wa.me/" + (waRaw.startsWith("88") ? waRaw : "88" + waRaw.replace(/^0/, ""));
-    const email = p.email || "samim.khanmiyaa@gmail.com";
-    const name = p.name || "Shofikul Islam Samim";
-    const designation = p.designation || "Owner & CEO";
-    const company = p.company || "Khan Digital Solution";
-    const bio = p.bio || "";
-    const liveUrl = new URL("./", window.location.href).href.split("#")[0];
+    // IMPORTANT: This PDF is generated from the CURRENT rendered website DOM.
+    // That means the PDF visually follows the live website design/data at the
+    // exact moment the user clicks Save Contact. It is not a separately
+    // designed PDF template.
+    const page = document.getElementById("personalPageContainer");
+    if (!page) {
+      showToast("Website content is not ready for PDF export.");
+      return;
+    }
 
-    const doc = new jsPDF({ unit: "mm", format: "a4" });
-    const W = 210;
-    const margin = 18;
-    let y = 0;
+    // Keep transient UI out of the PDF.
+    const modal = document.getElementById("connectModal");
+    const previousModalVisibility = modal ? modal.classList.contains("hidden") : true;
+    if (modal) modal.classList.add("hidden");
 
-    // Premium dark card header.
-    doc.setFillColor(9, 13, 22);
-    doc.rect(0, 0, W, 72, "F");
-    doc.setFillColor(2, 132, 199);
-    doc.rect(0, 0, W, 4, "F");
+    // Make sure lazy images have had a chance to paint.
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-    // Cover image, when the public image allows browser access.
-    const coverUrl = branding.coverUrl || "";
-    if (coverUrl) {
-      try {
-        const coverData = await imageUrlToDataUrl(coverUrl);
-        if (coverData) {
-          doc.addImage(coverData, "JPEG", 0, 4, W, 34, undefined, "FAST");
-          doc.setFillColor(9, 13, 22);
-          doc.setGState?.(new doc.GState({ opacity: 0.55 }));
-          doc.rect(0, 4, W, 34, "F");
-          doc.setGState?.(new doc.GState({ opacity: 1 }));
+    const rect = page.getBoundingClientRect();
+    const scale = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1));
+
+    const canvas = await html2canvas(page, {
+      scale,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: "#f8fafc",
+      logging: false,
+      imageTimeout: 15000,
+      width: Math.ceil(rect.width),
+      height: Math.ceil(page.scrollHeight),
+      windowWidth: Math.ceil(rect.width),
+      windowHeight: Math.ceil(page.scrollHeight),
+      scrollX: 0,
+      scrollY: -window.scrollY
+    });
+
+    if (modal && !previousModalVisibility) modal.classList.remove("hidden");
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true
+    });
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const pxPerMm = canvas.width / pageWidth;
+    const sliceHeightPx = Math.floor(pageHeight * pxPerMm);
+
+    // The website is inserted as-is; only proportional scaling is applied
+    // so it fits A4. Long pages are split into consecutive PDF pages.
+    let offsetY = 0;
+    let pdfPage = 0;
+
+    while (offsetY < canvas.height) {
+      const currentHeight = Math.min(sliceHeightPx, canvas.height - offsetY);
+      const slice = document.createElement("canvas");
+      slice.width = canvas.width;
+      slice.height = currentHeight;
+
+      const ctx = slice.getContext("2d");
+      ctx.drawImage(
+        canvas,
+        0, offsetY, canvas.width, currentHeight,
+        0, 0, canvas.width, currentHeight
+      );
+
+      const imageData = slice.toDataURL("image/jpeg", 0.94);
+      const renderedHeightMm = currentHeight / pxPerMm;
+
+      if (pdfPage > 0) pdf.addPage();
+      pdf.addImage(imageData, "JPEG", 0, 0, pageWidth, renderedHeightMm, undefined, "FAST");
+
+      pdfPage += 1;
+      offsetY += currentHeight;
+    }
+
+    // Add invisible, clickable PDF links over the same elements that are
+    // clickable on the website. The visual layer remains the exact screenshot.
+    const pageRect = page.getBoundingClientRect();
+    const anchors = Array.from(page.querySelectorAll("a[href]"));
+
+    anchors.forEach(anchor => {
+      const href = anchor.getAttribute("href");
+      if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+
+      const r = anchor.getBoundingClientRect();
+      const leftPx = r.left - pageRect.left + page.scrollLeft;
+      const topPx = r.top - pageRect.top + page.scrollTop;
+      const widthPx = r.width;
+      const heightPx = r.height;
+
+      if (widthPx <= 0 || heightPx <= 0) return;
+
+      const startPage = Math.floor(topPx / sliceHeightPx);
+      const endPage = Math.floor((topPx + heightPx - 1) / sliceHeightPx);
+
+      for (let pg = startPage; pg <= endPage; pg++) {
+        const pageTop = pg * sliceHeightPx;
+        const visibleTop = Math.max(topPx, pageTop);
+        const visibleBottom = Math.min(topPx + heightPx, pageTop + sliceHeightPx);
+        const visibleHeight = visibleBottom - visibleTop;
+        if (visibleHeight <= 0) continue;
+
+        const x = leftPx / pxPerMm;
+        const y = (visibleTop - pageTop) / pxPerMm;
+        const w = widthPx / pxPerMm;
+        const h = visibleHeight / pxPerMm;
+
+        if (pg > 0) {
+          // addPage() was already called during rendering; this only selects
+          // the correct PDF page for the annotation.
         }
-      } catch (_) {}
-    }
+        pdf.setPage(pg + 1);
 
-    // Profile image, when available.
-    const photoUrl = p.photoUrl || "";
-    if (photoUrl) {
-      try {
-        const photoData = await imageUrlToDataUrl(photoUrl);
-        if (photoData) {
-          doc.addImage(photoData, "JPEG", margin, 18, 36, 36, undefined, "FAST");
+        let url;
+        try {
+          url = new URL(href, window.location.href).href;
+        } catch (_) {
+          url = href;
         }
-      } catch (_) {}
+
+        pdf.link(x, y, w, h, { url });
+      }
+    });
+
+    const name = data?.personal?.name || "KDS_Digital_Card";
+    const safeName = String(name)
+      .replace(/[^a-z0-9\\s-]/gi, "")
+      .trim()
+      .replace(/\\s+/g, "_") || "KDS_Digital_Card";
+
+    pdf.save(`${safeName}_Live_Digital_Card.pdf`);
+    if (!options.silent) {
+      showToast("Live PDF downloaded — same website design with clickable links.");
     }
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.text(name, 62, 27);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(56, 189, 248);
-    doc.text(designation, 62, 35);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(255, 255, 255);
-    doc.text(company, 62, 43);
-
-    y = 84;
-    doc.setTextColor(15, 23, 42);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(15);
-    doc.text("Contact", margin, y);
-
-    const contactItems = [
-      ["Call", phoneHref, phoneHref],
-      ["WhatsApp", waHref, waHref],
-      ["Email", "mailto:" + email, email],
-      ["Digital Card", liveUrl, liveUrl]
-    ];
-
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    for (const [label, url, visible] of contactItems) {
-      doc.setTextColor(100, 116, 139);
-      doc.text(label, margin, y);
-      doc.setTextColor(2, 132, 199);
-      doc.setFont("helvetica", "bold");
-      doc.text(String(visible), margin + 34, y);
-      const width = doc.getTextWidth(String(visible));
-      doc.link(margin + 34, y - 5, width, 7, { url });
-      doc.setFont("helvetica", "normal");
-      y += 9;
-    }
-
-    if (bio) {
-      y += 5;
-      doc.setTextColor(15, 23, 42);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(15);
-      doc.text("About", margin, y);
-      y += 8;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.setTextColor(71, 85, 105);
-      const lines = doc.splitTextToSize(bio, W - margin * 2);
-      doc.text(lines, margin, y);
-      y += lines.length * 5 + 5;
-    }
-
-    // Social links are live PDF annotations.
-    const socials = Array.isArray(data?.personalSocials) ? data.personalSocials.filter(x => x?.active !== false && x?.url) : [];
-    if (socials.length) {
-      doc.setTextColor(15, 23, 42);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(15);
-      doc.text("Connect with me", margin, y);
-      y += 9;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-
-      socials.forEach((item, index) => {
-        const label = item.platform || item.icon || "Social";
-        const url = window.KDS.normalizeUrl(item.url);
-        const x = margin + (index % 2) * 90;
-        const rowY = y + Math.floor(index / 2) * 10;
-        doc.setTextColor(2, 132, 199);
-        doc.text(label, x, rowY);
-        doc.link(x, rowY - 5, Math.min(doc.getTextWidth(label) + 8, 75), 7, { url });
-      });
-      y += Math.ceil(socials.length / 2) * 10 + 8;
-    }
-
-    // QR code for the live card URL, if the existing QR canvas is available.
-    const qrCanvas = document.getElementById("personalQrCanvas");
-    if (qrCanvas && y < 245) {
-      try {
-        const qrData = qrCanvas.toDataURL("image/png");
-        doc.addImage(qrData, "PNG", W - margin - 42, y, 42, 42);
-        doc.link(W - margin - 42, y, 42, 42, { url: liveUrl });
-      } catch (_) {}
-    }
-
-    doc.setDrawColor(226, 232, 240);
-    doc.line(margin, 274, W - margin, 274);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(100, 116, 139);
-    doc.text("Khan Digital Solution — Your Growth, Our Mission", margin, 282);
-    doc.setTextColor(2, 132, 199);
-    doc.text("Open Digital Card", W - margin - 34, 282);
-    doc.link(W - margin - 34, 277, 34, 7, { url: liveUrl });
-
-    const safeName = name.replace(/[^a-z0-9\\s-]/gi, "").trim().replace(/\\s+/g, "_") || "KDS_Digital_Card";
-    doc.save(`${safeName}_Live_Digital_Card.pdf`);
-    if (!options.silent) showToast("Live PDF downloaded. Links inside the PDF are clickable.");
   } catch (err) {
-    console.error("[KDS] Live PDF generation failed:", err);
+    console.error("[KDS] Website-to-PDF generation failed:", err);
+    const modal = document.getElementById("connectModal");
+    if (modal) modal.classList.remove("hidden");
     showToast("Live PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
   }
 }
