@@ -343,6 +343,9 @@ function populateAllForms(data) {
   setValue("admBusinessWhatsApp", b.whatsapp);
   setValue("admBusinessEmail", b.email);
   setValue("admBusinessLogoUrl", b.logoUrl);
+  setValue("admBusinessCoverUrl", branding.businessCoverUrl || "");
+  const businessCoverThumb = document.getElementById("admBusinessCoverPreview");
+  if (businessCoverThumb) businessCoverThumb.src = branding.businessCoverUrl || "./assets/placeholders/logo.jpg";
 
   const logoThumb = document.getElementById("admBusinessLogoPreview");
   if (logoThumb) logoThumb.src = b.logoUrl || "./assets/placeholders/logo.jpg";
@@ -471,6 +474,7 @@ function setupImageUploads() {
   setupUploader("admAdminLogoFile","admAdminLogoPreview","admAdminLogoUrl","admin_logo");
   // 7. Personal Profile Cover Photo Upload
   setupUploader("admProfileCoverFile","admProfileCoverPreview","admProfileCoverUrl","profile_cover");
+  setupUploader("admBusinessCoverFile","admBusinessCoverPreview","admBusinessCoverUrl","business_cover");
 }
 
 function setupUploader(fileInputId, previewImgId, urlInputId, folderType) {
@@ -1228,7 +1232,8 @@ async function saveAllChanges() {
         cardLogoUrl: getValue("admCardLogoUrl") || getValue("admBrandLogoUrl") || "",
         faviconUrl: getValue("admFaviconUrl") || getValue("admBrandLogoUrl") || "",
         adminLogoUrl: getValue("admAdminLogoUrl") || getValue("admBrandLogoUrl") || "",
-        coverUrl: getValue("admProfileCoverUrl") || ""
+        coverUrl: getValue("admProfileCoverUrl") || "",
+        businessCoverUrl: getValue("admBusinessCoverUrl") || ""
       },
       settings
     };
