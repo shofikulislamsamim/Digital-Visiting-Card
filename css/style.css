@@ -2265,3 +2265,39 @@ body {
     height: min(230px, 76vw);
   }
 }
+
+
+/* Profile photo refinement: larger on phones, one clean border, no live-status dot. */
+.avatar-wrapper,
+.business-profile-logo {
+  width: 146px;
+  height: 146px;
+  padding: 0;
+  background: transparent;
+  border: 4px solid #ffffff;
+  box-shadow: 0 16px 36px rgba(0,0,0,.38);
+}
+
+.status-badge {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .avatar-wrapper,
+  .business-profile-logo {
+    width: 140px;
+    height: 140px;
+    margin-top: -70px;
+    padding: 0;
+    border: 4px solid #ffffff;
+  }
+}
+
+@media (max-width: 360px) {
+  .avatar-wrapper,
+  .business-profile-logo {
+    width: 128px;
+    height: 128px;
+    margin-top: -64px;
+  }
+}
