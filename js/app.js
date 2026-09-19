@@ -118,7 +118,7 @@ function renderPersonalPage(data) {
   // vCard starts immediately; PDF generation follows from the same user action.
   const handleVCardDownload = async (e) => {
     if (e) e.preventDefault();
-    window.KDS.downloadVCard(p);
+    window.KDS.downloadVCard(p, data.personalSocials || []);
     showConnectModal(data);
   };
 
