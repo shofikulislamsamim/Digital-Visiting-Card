@@ -55,6 +55,25 @@ function applySiteBranding(data) {
 function renderPersonalPage(data) {
   applySiteBranding(data);
   const p = data.personal || {};
+  const coverUrl = data?.branding?.coverUrl || "";
+  const cover = document.getElementById("personalProfileCover");
+  if (cover) {
+    cover.innerHTML = "";
+    if (coverUrl) {
+      const img = document.createElement("img");
+      img.className = "profile-cover-image";
+      img.alt = "";
+      img.src = coverUrl;
+      img.onerror = () => {
+        cover.innerHTML = '<div class="profile-cover-placeholder"></div>';
+      };
+      cover.appendChild(img);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "profile-cover-placeholder";
+      cover.appendChild(placeholder);
+    }
+  }
 
   // Personal Info Elements
   const elAvatar = document.getElementById("personalAvatar");
