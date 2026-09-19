@@ -1273,3 +1273,25 @@ body {
     align-items: stretch;
   }
 }
+
+/* Branding upload controls */
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.image-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.image-upload-row .file-input-wrapper {
+  flex: 1;
+}
+.image-upload-row .form-input {
+  margin-bottom: 8px;
+}
+@media (max-width: 640px) {
+  .image-upload-grid { grid-template-columns: 1fr; }
+  .image-upload-row { align-items: flex-start; }
+}
