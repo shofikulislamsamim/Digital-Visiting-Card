@@ -700,8 +700,6 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
   const shareBtn = document.getElementById(shareBtnId);
   if (!canvas) return;
 
-  // Always build a valid absolute URL. If saved publicUrl is invalid or stale,
-  // fall back to the current page so the QR can never encode a broken target.
   let currentUrl = window.location.href.split("#")[0];
   try {
     const candidate = String(explicitUrl || "").trim();
@@ -716,106 +714,73 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
     console.warn("[KDS] Invalid QR target URL; using current page.", err);
   }
 
-  const renderQr = () => {
-    const drawFallback = () => {
-      const frame = canvas.parentElement;
-      if (!frame) return false;
-      const img = document.createElement("img");
-      img.width = 220;
-      img.height = 220;
-      img.alt = "QR Code";
-      img.loading = "eager";
-      img.decoding = "sync";
-      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(currentUrl)}`;
-      img.dataset.qrUrl = currentUrl;
-      canvas.replaceWith(img);
-      return true;
-    };
+  const frame = canvas.parentElement;
+  if (!frame || typeof QRCode === "undefined") {
+    console.error("[KDS] Local QR library is unavailable.");
+    return;
+  }
 
-    if (typeof QRCode === "undefined" || typeof QRCode.toCanvas !== "function") {
-      console.warn("[KDS] QR library unavailable; using verified QR fallback.");
-      return drawFallback();
-    }
+  const qrHost = document.createElement("div");
+  qrHost.id = canvas.id + "_host";
+  qrHost.style.width = "220px";
+  qrHost.style.height = "220px";
+  qrHost.style.display = "flex";
+  qrHost.style.alignItems = "center";
+  qrHost.style.justifyContent = "center";
+  qrHost.style.background = "#ffffff";
+  canvas.replaceWith(qrHost);
 
-    try {
-      const ctx = canvas.getContext("2d");
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      QRCode.toCanvas(canvas, currentUrl, {
-        width: 220,
-        margin: 2,
-        errorCorrectionLevel: "H",
-        color: { dark: "#0f172a", light: "#ffffff" }
-      }, (error) => {
-        if (error) {
-          console.error("[KDS] QR generation failed:", error);
-          drawFallback();
-          return;
-        }
-        canvas.dataset.qrUrl = currentUrl;
-      });
-      return true;
-    } catch (err) {
-      console.error("[KDS] QR generation failed:", err);
-      return drawFallback();
-    }
-  };
-
-  // qrcode.js is loaded before app.js on the public pages, so this should
-  // normally render immediately. A short retry handles slow script execution.
-  if (!renderQr()) {
-    let attempts = 0;
-    const retry = setInterval(() => {
-      attempts += 1;
-      if (renderQr() || attempts >= 20) clearInterval(retry);
-    }, 150);
+  try {
+    const qr = new QRCode(qrHost, {
+      text: currentUrl,
+      width: 220,
+      height: 220,
+      colorDark: "#0f172a",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    qrHost.dataset.qrUrl = currentUrl;
+    qrHost.dataset.qrReady = "true";
+  } catch (err) {
+    console.error("[KDS] QR generation failed:", err);
+    qrHost.textContent = "QR unavailable";
   }
 
   if (downloadBtn) {
-    downloadBtn.addEventListener("click", (e) => {
+    downloadBtn.onclick = (e) => {
       e.preventDefault();
       try {
-        if (!canvas.dataset.qrUrl) {
-          renderQr();
-        }
-        const dataUrl = canvas.toDataURL("image/png");
+        const qrCanvas = qrHost.querySelector("canvas");
+        const qrImage = qrHost.querySelector("img");
+        const source = qrCanvas ? qrCanvas.toDataURL("image/png") : (qrImage ? qrImage.src : "");
+        if (!source) throw new Error("QR image is not ready");
         const link = document.createElement("a");
-        link.download = `KDS_${(shareTitle || "Digital_Card")
-          .replace(/[^\\w\\s-]/g, "")
-          .replace(/\\s+/g, "_")}_QR.png`;
-        link.href = dataUrl;
+        link.download = `KDS_${(shareTitle || "Digital_Card").replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_QR.png`;
+        link.href = source;
         document.body.appendChild(link);
         link.click();
         link.remove();
       } catch (err) {
-        console.error("[KDS] Failed to download QR Code:", err);
-        showToast("QR Code is not ready yet. Please try again.");
+        console.error("[KDS] QR download failed:", err);
       }
-    });
+    };
   }
 
   if (shareBtn) {
-    shareBtn.addEventListener("click", async (e) => {
+    shareBtn.onclick = async (e) => {
       e.preventDefault();
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: shareTitle || "Khan Digital Solution",
-            text: "Connect with Khan Digital Solution – Digital Visiting Card",
-            url: currentUrl
-          });
-        } catch (err) {
-          // User cancelled the native share sheet.
-        }
-      } else {
-        try {
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: shareTitle || "Khan Digital Solution", url: currentUrl });
+        } else if (navigator.clipboard) {
           await navigator.clipboard.writeText(currentUrl);
-          showToast("Link copied to clipboard!");
-        } catch (clipErr) {
-          prompt("Copy this link:", currentUrl);
+          showToast("Profile link copied.");
+        } else {
+          window.prompt("Copy this profile link:", currentUrl);
         }
+      } catch (err) {
+        if (err?.name !== "AbortError") console.error("[KDS] QR share failed:", err);
       }
-    });
+    };
   }
 }
-
