@@ -167,6 +167,25 @@ function renderPersonalPage(data) {
 function renderBusinessPage(data) {
   const b = data.business || {};
 
+  // Use the same cover photo system as the personal profile.
+  const coverUrl = data?.branding?.coverUrl || "";
+  const cover = document.getElementById("businessProfileCover");
+  if (cover) {
+    cover.innerHTML = "";
+    if (coverUrl) {
+      const img = document.createElement("img");
+      img.className = "profile-cover-image";
+      img.alt = "";
+      img.src = coverUrl;
+      img.onerror = () => { cover.innerHTML = '<div class="profile-cover-placeholder"></div>'; };
+      cover.appendChild(img);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "profile-cover-placeholder";
+      cover.appendChild(placeholder);
+    }
+  }
+
   // Business Info Elements
   const elLogo = document.getElementById("businessLogo");
   const elName = document.getElementById("businessName");
