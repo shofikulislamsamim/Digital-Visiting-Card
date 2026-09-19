@@ -17,7 +17,7 @@
   <link rel="icon" type="image/jpeg" href="./assets/placeholders/logo.jpg" />
 
   <!-- Stylesheet (Relative Path) -->
-  <link rel="stylesheet" href="./css/style.css?v=20260919-instagramfix6" />
+  <link rel="stylesheet" href="./css/style.css?v=20260919-businesscover1" />
 
   <!-- Supabase JS & QRCode Libraries from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -41,7 +41,11 @@
 
     <!-- Business Hero Card -->
     <div class="business-hero" id="businessHero">
-      <div class="kds-logo-wrapper">
+      <!-- Same Facebook-style cover + profile system as the personal card -->
+      <div class="business-profile-cover profile-cover" id="businessProfileCover" aria-hidden="true">
+        <div class="profile-cover-placeholder"></div>
+      </div>
+      <div class="kds-logo-wrapper business-profile-logo">
         <img id="businessLogo" src="./assets/placeholders/logo.jpg" alt="Khan Digital Solution Logo" class="kds-logo-img" />
       </div>
 
@@ -149,7 +153,7 @@
   </div>
 
   <!-- Scripts (Relative Paths) -->
-  <script src="./js/config.js?v=20260919-instagramfix5"></script>
-  <script src="./js/app.js?v=20260919-qrfix3"></script>
+  <script src="./js/config.js?v=20260919-businesscover1"></script>
+  <script src="./js/app.js?v=20260919-businesscover2"></script>
 </body>
 </html>
