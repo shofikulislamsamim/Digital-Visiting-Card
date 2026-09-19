@@ -35,7 +35,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 /**
  * Render Personal Profile (index.html)
  */
+function applySiteBranding(data) {
+  const b = data?.branding || data?.settings?.branding || {};
+  const fallback = data?.business?.logoUrl || window.KDS.DEFAULT_SITE_DATA.business.logoUrl;
+  const logo = b.logoUrl || fallback;
+  const cardLogo = b.cardLogoUrl || logo;
+  const favicon = b.faviconUrl || logo;
+
+  document.querySelectorAll(".switch-logo").forEach(el => {
+    el.src = cardLogo;
+    el.onerror = () => { el.src = fallback; };
+  });
+
+  document.querySelectorAll('link[rel="icon"]').forEach(el => {
+    el.href = favicon;
+  });
+}
+
 function renderPersonalPage(data) {
+  applySiteBranding(data);
   const p = data.personal || {};
 
   // Personal Info Elements
