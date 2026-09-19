@@ -1513,3 +1513,42 @@ body {
     height: 120px;
   }
 }
+
+/* Business profile: same Facebook-style cover/profile layout as personal card */
+.business-hero {
+  padding: 0 24px 32px;
+}
+.business-profile-cover {
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.business-profile-logo {
+  position: relative;
+  z-index: 3;
+  width: 116px;
+  height: 116px;
+  margin: -58px auto 16px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  border: 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,.4);
+}
+.business-profile-logo .kds-logo-img {
+  border-radius: 50%;
+}
+@media (max-width: 480px) {
+  .business-hero {
+    padding: 0 18px 28px;
+  }
+  .business-profile-cover {
+    width: calc(100% + 36px);
+    margin-left: -18px;
+  }
+  .business-profile-logo {
+    width: 108px;
+    height: 108px;
+    margin-top: -54px;
+  }
+}
