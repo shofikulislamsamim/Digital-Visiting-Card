@@ -368,7 +368,7 @@ function showConnectModal(data) {
   ].filter(item => item.url);
 
   options.innerHTML = items.map(item => {
-    const icon = window.KDS.getSvgIcon(item.icon, "connect-brand-icon");
+    const icon = item.icon === "instagram" ? window.KDS.getSvgIcon("instagramOriginal", "connect-brand-icon") : window.KDS.getSvgIcon(item.icon, "connect-brand-icon");
     return `<a class="connect-option" href="${escapeHtml(window.KDS.normalizeUrl(item.url))}" target="_blank" rel="noopener noreferrer">
       <span class="connect-option-icon" data-platform="${item.icon}">${icon}</span>
       <span class="connect-option-copy">
