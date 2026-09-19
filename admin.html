@@ -512,6 +512,17 @@
 
     <!-- ==================== TAB 6: MEDIA UPLOAD ==================== -->
     <div id="tab-media" class="tab-pane hidden">
+      <div class="service-card" style="padding:24px;">
+        <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:8px;">Site Branding &amp; Logos <span class="bengali-hint">(সব লোগো)</span></h3>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:18px;">এখান থেকে লোগো নির্বাচন করুন। ছবি Supabase Storage-এ আপলোড হবে। এরপর Save Changes চাপুন।</p>
+        <div class="image-upload-grid">
+          <div class="image-upload-box"><label class="form-label">Main / Business Logo</label><div class="image-upload-row"><img id="admBrandLogoPreview" src="./assets/placeholders/logo.jpg" alt="Main Logo" class="preview-thumb"><div class="file-input-wrapper"><input type="file" id="admBrandLogoFile" accept="image/*" class="form-input" style="padding:6px;"><input type="text" id="admBrandLogoUrl" class="form-input" placeholder="Uploaded logo URL"></div></div></div>
+          <div class="image-upload-box"><label class="form-label">Personal Card Logo</label><div class="image-upload-row"><img id="admCardLogoPreview" src="./assets/placeholders/logo.jpg" alt="Card Logo" class="preview-thumb"><div class="file-input-wrapper"><input type="file" id="admCardLogoFile" accept="image/*" class="form-input" style="padding:6px;"><input type="text" id="admCardLogoUrl" class="form-input" placeholder="Uploaded logo URL"></div></div></div>
+          <div class="image-upload-box"><label class="form-label">Favicon</label><div class="image-upload-row"><img id="admFaviconPreview" src="./assets/placeholders/logo.jpg" alt="Favicon" class="preview-thumb"><div class="file-input-wrapper"><input type="file" id="admFaviconFile" accept="image/*" class="form-input" style="padding:6px;"><input type="text" id="admFaviconUrl" class="form-input" placeholder="Uploaded favicon URL"></div></div></div>
+          <div class="image-upload-box"><label class="form-label">Admin Panel Logo</label><div class="image-upload-row"><img id="admAdminLogoPreview" src="./assets/placeholders/logo.jpg" alt="Admin Logo" class="preview-thumb"><div class="file-input-wrapper"><input type="file" id="admAdminLogoFile" accept="image/*" class="form-input" style="padding:6px;"><input type="text" id="admAdminLogoUrl" class="form-input" placeholder="Uploaded admin logo URL"></div></div></div>
+        </div>
+      </div>
+
       <div class="service-card" style="padding: 24px;">
         <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Supabase Storage (kds-assets)</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
