@@ -2301,3 +2301,28 @@ body {
     margin-top: -64px;
   }
 }
+
+
+/* Profile photo border: restore the original KDS blue gradient as a single border. */
+.avatar-wrapper,
+.business-profile-logo {
+  padding: 4px;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .avatar-wrapper,
+  .business-profile-logo {
+    padding: 4px;
+    border: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .avatar-wrapper,
+  .business-profile-logo {
+    padding: 4px;
+    border: 0;
+  }
+}
