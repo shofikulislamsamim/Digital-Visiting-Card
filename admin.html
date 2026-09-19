@@ -544,7 +544,7 @@
 
         <div class="form-group">
           <label class="form-label">Configured Public Base URL</label>
-          <input type="url" id="admPublicUrl" class="form-input" placeholder="https://shofikulislamsamim.github.io/kds-digital-card/" />
+          <input type="url" id="admPublicUrl" class="form-input" placeholder="https://shofikulislamsamim.github.io/Digital-Visiting-Card/" />
           <span style="font-size: 0.76rem; color: var(--text-subtle);">Change this URL if deploying to a custom domain or custom GitHub Pages username.</span>
         </div>
 
@@ -582,56 +582,8 @@
 
     <!-- ==================== TAB 8: SETTINGS & BACKUP ==================== -->
     <div id="tab-settings" class="tab-pane hidden">
-      <div class="service-card" style="padding: 24px; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h3 style="font-size: 1.2rem; font-weight: 700;">Supabase Cloud Configuration</h3>
-          <span id="cfgConnectionBadge" style="font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 9999px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
-            Checking Status...
-          </span>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
-          Connect your Khan Digital Solution Supabase project. Enter your Publishable / Anon Key below and click <strong>Save Supabase Configuration</strong>.
-        </p>
-
-        <div class="form-group">
-          <label class="form-label" for="cfgSupabaseUrl">Supabase Project URL</label>
-          <input type="url" id="cfgSupabaseUrl" class="form-input" value="https://sypwzqawdxgxzmwimjbp.supabase.co" placeholder="https://sypwzqawdxgxzmwimjbp.supabase.co" />
-          <span style="font-size: 0.76rem; color: var(--text-subtle);">Pre-configured with your Khan Digital Solution Supabase Project endpoint.</span>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="cfgSupabaseAnonKey">Supabase Public Anon / Publishable Key</label>
-          <div style="position: relative; display: flex; align-items: center;">
-            <input type="password" id="cfgSupabaseAnonKey" class="form-input" placeholder="Paste your Supabase Publishable / Anon Key here (eyJhbGciOiJIUzI1Ni...)" style="padding-right: 80px;" autocomplete="off" />
-            <button type="button" id="btnToggleAnonKeyVisibility" class="btn-secondary" style="position: absolute; right: 6px; padding: 4px 10px; font-size: 0.75rem; height: 32px;">
-              Show
-            </button>
-          </div>
-          <span style="font-size: 0.76rem; color: var(--text-subtle);">Use the public Anon/Publishable key from your Supabase Dashboard &rarr; Project Settings &rarr; API. Never enter the secret service_role key.</span>
-        </div>
-
-        <!-- Connection Status Box -->
-        <div class="form-group" style="margin-top: 18px; margin-bottom: 20px;">
-          <label class="form-label">Connection Status</label>
-          <div id="cfgConnectionStatusText" style="font-size: 0.88rem; padding: 14px 16px; border-radius: var(--radius-md); background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); color: var(--text-muted); line-height: 1.6;">
-            Checking connection to Supabase database...
-          </div>
-        </div>
-
-        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px;">
-          <button type="button" id="btnSaveSupabaseConfig" class="btn-primary" style="width: auto; padding: 12px 24px; font-weight: 700;">
-            Save Supabase Configuration
-          </button>
-          <button type="button" id="btnTestSupabaseConn" class="btn-secondary" style="padding: 12px 20px;">
-            Test Connection
-          </button>
-          <button type="button" id="btnDisconnectSupabase" class="btn-secondary" style="color: #f87171; border-color: rgba(239, 68, 68, 0.3); padding: 12px 18px;">
-            Disconnect
-          </button>
-        </div>
-      </div>
-
-      <!-- Backup & Restore -->
+      <div class="service-card" style="padding: 24px;">
+        <!-- Backup & Restore -->
       <div class="service-card" style="padding: 24px;">
         <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Backup &amp; Reset</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
@@ -653,7 +605,11 @@
           </button>
         </div>
       </div>
+    
+      </div>
     </div>
+
+</div>
 
   </div>
 
