@@ -2038,3 +2038,230 @@ button, a.btn-action, a.btn-save-contact, .social-icon-link {
     padding-bottom: 10px;
   }
 }
+
+
+/* ==============================================================================
+   KDS CARD REFRESH — premium glass / editorial layout
+   Safe visual layer: keeps existing IDs, data bindings and admin-managed content.
+   ============================================================================== */
+:root {
+  --kds-blue: #0ea5e9;
+  --kds-blue-strong: #0284c7;
+  --kds-ink: #07111f;
+  --kds-panel: rgba(10, 20, 36, .78);
+  --kds-line: rgba(148, 163, 184, .16);
+  --kds-soft: rgba(255,255,255,.68);
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(14,165,233,.14), transparent 32%),
+    radial-gradient(circle at 90% 12%, rgba(59,130,246,.10), transparent 30%),
+    #050a12;
+}
+
+.page-container {
+  max-width: 720px;
+  gap: 18px;
+}
+
+.profile-card,
+.business-hero,
+.qr-card {
+  border: 1px solid var(--kds-line);
+  background: linear-gradient(145deg, rgba(15,27,46,.94), rgba(7,15,28,.96));
+  box-shadow: 0 24px 70px rgba(0,0,0,.34);
+}
+
+.profile-card {
+  overflow: hidden;
+}
+
+.profile-cover {
+  height: 190px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(2,132,199,.82), rgba(7,15,28,.15) 52%, rgba(3,7,18,.9)),
+    radial-gradient(circle at 75% 20%, rgba(56,189,248,.35), transparent 35%);
+}
+
+.profile-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(5,10,18,.58));
+  pointer-events: none;
+}
+
+.profile-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 75% 25%, rgba(56,189,248,.34), transparent 20%),
+    linear-gradient(135deg, #0b1c31, #0a4b70 50%, #06101d);
+}
+
+.profile-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-header {
+  position: relative;
+  padding-bottom: 22px;
+}
+
+.avatar-wrapper,
+.business-profile-logo {
+  border: 4px solid rgba(255,255,255,.94);
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  box-shadow: 0 18px 42px rgba(0,0,0,.40);
+}
+
+.avatar-img,
+.business-profile-logo .kds-logo-img {
+  background: #07111f;
+}
+
+.status-badge {
+  box-shadow: 0 0 0 4px #0b1728, 0 0 0 6px rgba(34,197,94,.14);
+}
+
+.founder-name,
+.business-name {
+  letter-spacing: -.035em;
+  font-weight: 800;
+}
+
+.founder-title {
+  color: #bae6fd;
+}
+
+.company-badge,
+.business-tagline {
+  border: 1px solid rgba(56,189,248,.24);
+  background: rgba(14,165,233,.09);
+  color: #7dd3fc;
+}
+
+.founder-bio,
+.business-about {
+  color: rgba(226,232,240,.74);
+}
+
+.actions-grid {
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+.btn-action {
+  border: 1px solid var(--kds-line);
+  background: rgba(255,255,255,.035);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56,189,248,.34);
+  background: rgba(14,165,233,.08);
+}
+
+.btn-save-contact {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  box-shadow: 0 12px 30px rgba(2,132,199,.24);
+  border: 0;
+}
+
+.social-icon-link {
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.035);
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.social-icon-link:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56,189,248,.42);
+  background: rgba(14,165,233,.10);
+}
+
+.card-nav-switch {
+  margin: 0 14px 16px;
+  border: 1px solid rgba(56,189,248,.18);
+  background: linear-gradient(135deg, rgba(14,165,233,.08), rgba(255,255,255,.025));
+}
+
+.qr-card {
+  padding: 22px;
+}
+
+.qr-frame {
+  width: 236px;
+  height: 236px;
+  padding: 8px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(0,0,0,.30);
+}
+
+.qr-frame canvas,
+.qr-frame .qr-generated-image {
+  border-radius: 10px;
+}
+
+.services-section {
+  padding: 4px;
+}
+
+.services-grid {
+  gap: 12px;
+}
+
+.service-card {
+  border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(145deg, rgba(17,31,52,.86), rgba(9,18,31,.9));
+  box-shadow: 0 14px 34px rgba(0,0,0,.18);
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56,189,248,.28);
+}
+
+.service-icon-box {
+  background: rgba(14,165,233,.10);
+  border: 1px solid rgba(56,189,248,.18);
+  color: #38bdf8;
+}
+
+.page-footer {
+  color: rgba(148,163,184,.60);
+  padding-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .page-container,
+  .business-container {
+    gap: 12px;
+  }
+
+  .profile-cover {
+    height: 150px;
+  }
+
+  .profile-card,
+  .business-hero,
+  .qr-card {
+    box-shadow: 0 16px 42px rgba(0,0,0,.28);
+  }
+
+  .qr-frame {
+    width: min(230px, 76vw);
+    height: min(230px, 76vw);
+  }
+}

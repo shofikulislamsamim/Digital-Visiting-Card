@@ -10,11 +10,13 @@ const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_bnI3nXmXgqf9CQIfMdVR4w_rftT8yP
 
 // Dynamic credentials getter to ensure immediate updates without stale references
 function getActiveSupabaseUrl() {
-  return DEFAULT_SUPABASE_URL;
+  const saved = localStorage.getItem("KDS_SUPABASE_URL");
+  return (saved && saved.trim()) ? saved.trim() : DEFAULT_SUPABASE_URL;
 }
 
 function getActiveSupabaseAnonKey() {
-  return DEFAULT_SUPABASE_ANON_KEY;
+  const saved = localStorage.getItem("KDS_SUPABASE_ANON_KEY");
+  return (saved && saved.trim()) ? saved.trim() : DEFAULT_SUPABASE_ANON_KEY;
 }
 
 // Check if Supabase has been configured with valid URL and publishable/anon key

@@ -306,45 +306,67 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
     console.warn("[KDS] Invalid QR target URL; using current page.", err);
   }
 
-  // Use a plain QR image endpoint for maximum browser compatibility.
-  // This avoids canvas/library timing issues on the Business Profile page.
-  const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=" + encodeURIComponent(currentUrl);
-  const img = document.createElement("img");
-  img.className = "qr-generated-image";
-  img.width = 220;
-  img.height = 220;
-  img.alt = "QR Code";
-  img.loading = "eager";
-  img.decoding = "async";
-  img.referrerPolicy = "no-referrer";
-  img.src = qrUrl;
-  img.dataset.qrUrl = currentUrl;
-
   const frame = canvas.parentElement;
-  if (frame) {
+  if (!frame) return;
+
+  frame.querySelectorAll(".qr-generated-image").forEach(el => el.remove());
+  canvas.style.display = "block";
+
+  // Prefer the bundled QR library so the public card has no third-party QR API dependency.
+  let generated = false;
+  try {
+    if (typeof QRCode !== "undefined" && typeof QRCode.toCanvas === "function") {
+      QRCode.toCanvas(canvas, currentUrl, {
+        width: 220,
+        margin: 2,
+        errorCorrectionLevel: "M"
+      }, (error) => {
+        if (error) {
+          console.error("[KDS] QR generation failed:", error);
+          renderQrFallback();
+        }
+      });
+      generated = true;
+    }
+  } catch (err) {
+    console.error("[KDS] QR library error:", err);
+  }
+
+  function renderQrFallback() {
+    if (frame.querySelector(".qr-generated-image")) return;
+    const img = document.createElement("img");
+    img.className = "qr-generated-image";
+    img.width = 220;
+    img.height = 220;
+    img.alt = "QR Code";
+    img.loading = "eager";
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=" + encodeURIComponent(currentUrl);
+    img.dataset.qrUrl = currentUrl;
     canvas.style.display = "none";
-    frame.querySelectorAll(".qr-generated-image").forEach(el => el.remove());
     frame.appendChild(img);
   }
+
+  if (!generated) renderQrFallback();
 
   if (downloadBtn) {
     downloadBtn.onclick = async (e) => {
       e.preventDefault();
       try {
-        const response = await fetch(qrUrl, { mode: "cors", cache: "no-store" });
-        if (!response.ok) throw new Error("QR image request failed");
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = `KDS_${(shareTitle || "Digital_Card").replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_QR.png`;
-        link.href = objectUrl;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+        if (canvas.style.display !== "none") {
+          const link = document.createElement("a");
+          link.download = `KDS_${(shareTitle || "Digital_Card").replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_QR.png`;
+          link.href = canvas.toDataURL("image/png");
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          return;
+        }
+        const img = frame.querySelector(".qr-generated-image");
+        if (img?.src) window.open(img.src, "_blank", "noopener,noreferrer");
       } catch (err) {
-        // If CORS blocks the download, open the QR image directly.
-        window.open(qrUrl, "_blank", "noopener,noreferrer");
+        console.error("[KDS] QR download failed:", err);
       }
     };
   }
