@@ -1514,30 +1514,35 @@ body {
   }
 }
 
-/* Business profile: same Facebook-style cover/profile layout as personal card */
+/* Business profile: exact same cover + profile sizing/border system as personal card */
 .business-hero {
   padding: 0 24px 32px;
 }
+
+/* The cover uses the exact same .profile-cover dimensions as the personal card. */
 .business-profile-cover {
   width: calc(100% + 48px);
   margin-left: -24px;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
+
+/* Exact match to the personal .avatar-wrapper: 146px desktop, 136px mobile. */
 .business-profile-logo {
   position: relative;
   z-index: 3;
-  width: 116px;
-  height: 116px;
-  margin: -58px auto 16px;
+  width: 146px;
+  height: 146px;
+  margin: -73px auto 16px;
   border-radius: 50%;
-  padding: 5px;
+  padding: 4px;
   background: linear-gradient(135deg, #38bdf8, #0284c7);
   border: 0;
-  box-shadow: 0 10px 25px rgba(0,0,0,.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 .business-profile-logo .kds-logo-img {
   border-radius: 50%;
 }
+
 @media (max-width: 480px) {
   .business-hero {
     padding: 0 18px 28px;
@@ -1547,8 +1552,8 @@ body {
     margin-left: -18px;
   }
   .business-profile-logo {
-    width: 108px;
-    height: 108px;
-    margin-top: -54px;
+    width: 136px;
+    height: 136px;
+    margin-top: -68px;
   }
 }
