@@ -108,6 +108,12 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
+  // Live PDF: generates a real PDF with clickable phone, WhatsApp, email and social links.
+  const btnLivePdf = document.getElementById("btnLivePdf");
+  if (btnLivePdf) {
+    btnLivePdf.addEventListener("click", () => generateLivePdf(data));
+  }
+
   // Save Contact: use the universal vCard method.
   // This is the most reliable web-based option across Android, iPhone, and desktop.
   const handleVCardDownload = (e) => {
@@ -402,6 +408,196 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
     });
   }
 }
+
+async function generateLivePdf(data) {
+  try {
+    const jsPDF = window.jspdf?.jsPDF;
+    if (!jsPDF) {
+      showToast("PDF engine is still loading. Please try again.");
+      return;
+    }
+
+    const p = data?.personal || {};
+    const branding = data?.branding || {};
+    const phoneRaw = p.phoneFormatted || p.phone || "01744188460";
+    const phone = String(phoneRaw).replace(/[^\\d+]/g, "");
+    const phoneHref = phone.startsWith("+") ? phone : "+88" + phone.replace(/^0/, "");
+    const waRaw = String(p.whatsappFormatted || p.whatsapp || phoneRaw).replace(/[^\\d]/g, "");
+    const waHref = "https://wa.me/" + (waRaw.startsWith("88") ? waRaw : "88" + waRaw.replace(/^0/, ""));
+    const email = p.email || "samim.khanmiyaa@gmail.com";
+    const name = p.name || "Shofikul Islam Samim";
+    const designation = p.designation || "Owner & CEO";
+    const company = p.company || "Khan Digital Solution";
+    const bio = p.bio || "";
+    const liveUrl = new URL("./", window.location.href).href.split("#")[0];
+
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const W = 210;
+    const margin = 18;
+    let y = 0;
+
+    // Premium dark card header.
+    doc.setFillColor(9, 13, 22);
+    doc.rect(0, 0, W, 72, "F");
+    doc.setFillColor(2, 132, 199);
+    doc.rect(0, 0, W, 4, "F");
+
+    // Cover image, when the public image allows browser access.
+    const coverUrl = branding.coverUrl || "";
+    if (coverUrl) {
+      try {
+        const coverData = await imageUrlToDataUrl(coverUrl);
+        if (coverData) {
+          doc.addImage(coverData, "JPEG", 0, 4, W, 34, undefined, "FAST");
+          doc.setFillColor(9, 13, 22);
+          doc.setGState?.(new doc.GState({ opacity: 0.55 }));
+          doc.rect(0, 4, W, 34, "F");
+          doc.setGState?.(new doc.GState({ opacity: 1 }));
+        }
+      } catch (_) {}
+    }
+
+    // Profile image, when available.
+    const photoUrl = p.photoUrl || "";
+    if (photoUrl) {
+      try {
+        const photoData = await imageUrlToDataUrl(photoUrl);
+        if (photoData) {
+          doc.addImage(photoData, "JPEG", margin, 18, 36, 36, undefined, "FAST");
+        }
+      } catch (_) {}
+    }
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text(name, 62, 27);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(56, 189, 248);
+    doc.text(designation, 62, 35);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text(company, 62, 43);
+
+    y = 84;
+    doc.setTextColor(15, 23, 42);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(15);
+    doc.text("Contact", margin, y);
+
+    const contactItems = [
+      ["Call", phoneHref, phoneHref],
+      ["WhatsApp", waHref, waHref],
+      ["Email", "mailto:" + email, email],
+      ["Digital Card", liveUrl, liveUrl]
+    ];
+
+    y += 10;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    for (const [label, url, visible] of contactItems) {
+      doc.setTextColor(100, 116, 139);
+      doc.text(label, margin, y);
+      doc.setTextColor(2, 132, 199);
+      doc.setFont("helvetica", "bold");
+      doc.text(String(visible), margin + 34, y);
+      const width = doc.getTextWidth(String(visible));
+      doc.link(margin + 34, y - 5, width, 7, { url });
+      doc.setFont("helvetica", "normal");
+      y += 9;
+    }
+
+    if (bio) {
+      y += 5;
+      doc.setTextColor(15, 23, 42);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(15);
+      doc.text("About", margin, y);
+      y += 8;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105);
+      const lines = doc.splitTextToSize(bio, W - margin * 2);
+      doc.text(lines, margin, y);
+      y += lines.length * 5 + 5;
+    }
+
+    // Social links are live PDF annotations.
+    const socials = Array.isArray(data?.personalSocials) ? data.personalSocials.filter(x => x?.active !== false && x?.url) : [];
+    if (socials.length) {
+      doc.setTextColor(15, 23, 42);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(15);
+      doc.text("Connect with me", margin, y);
+      y += 9;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+
+      socials.forEach((item, index) => {
+        const label = item.platform || item.icon || "Social";
+        const url = window.KDS.normalizeUrl(item.url);
+        const x = margin + (index % 2) * 90;
+        const rowY = y + Math.floor(index / 2) * 10;
+        doc.setTextColor(2, 132, 199);
+        doc.text(label, x, rowY);
+        doc.link(x, rowY - 5, Math.min(doc.getTextWidth(label) + 8, 75), 7, { url });
+      });
+      y += Math.ceil(socials.length / 2) * 10 + 8;
+    }
+
+    // QR code for the live card URL, if the existing QR canvas is available.
+    const qrCanvas = document.getElementById("personalQrCanvas");
+    if (qrCanvas && y < 245) {
+      try {
+        const qrData = qrCanvas.toDataURL("image/png");
+        doc.addImage(qrData, "PNG", W - margin - 42, y, 42, 42);
+        doc.link(W - margin - 42, y, 42, 42, { url: liveUrl });
+      } catch (_) {}
+    }
+
+    doc.setDrawColor(226, 232, 240);
+    doc.line(margin, 274, W - margin, 274);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text("Khan Digital Solution — Your Growth, Our Mission", margin, 282);
+    doc.setTextColor(2, 132, 199);
+    doc.text("Open Digital Card", W - margin - 34, 282);
+    doc.link(W - margin - 34, 277, 34, 7, { url: liveUrl });
+
+    const safeName = name.replace(/[^a-z0-9\\s-]/gi, "").trim().replace(/\\s+/g, "_") || "KDS_Digital_Card";
+    doc.save(`${safeName}_Live_Digital_Card.pdf`);
+    showToast("Live PDF downloaded. Links inside the PDF are clickable.");
+  } catch (err) {
+    console.error("[KDS] Live PDF generation failed:", err);
+    showToast("Live PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
+  }
+}
+
+function imageUrlToDataUrl(url) {
+  return new Promise((resolve, reject) => {
+    if (!url) return resolve("");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/jpeg", 0.9));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 
 function setupConnectModal() {
   const modal = document.getElementById("connectModal");
