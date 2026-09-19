@@ -1418,11 +1418,21 @@ body {
 .connect-option-icon[data-platform="instagram"] { color:#ff0069; background:rgba(255,0,105,.10); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Instagram brand icon: keep the official filled mark visible on the dark card */
+/* Instagram brand icon: explicit fill so it stays visible in every social/Connect context */
 .social-icon-link[data-platform="instagram"] svg,
-.social-icon-link[data-platform="instagram"] .social-brand-icon,
-.social-icon-link.instagram svg {
-  fill: currentColor !important;
+.social-icon-link.instagram svg,
+.connect-option-icon[data-platform="instagram"] svg {
+  fill: #E1306C !important;
   stroke: none !important;
-  color: #ff0069 !important;
+  color: #E1306C !important;
+}
+.connect-option-icon[data-platform="instagram"] svg rect {
+  fill: #E1306C !important;
+}
+.connect-option-icon[data-platform="instagram"] svg circle:first-of-type {
+  fill: none !important;
+  stroke: #FFFFFF !important;
+}
+.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
+  fill: #FFFFFF !important;
 }
