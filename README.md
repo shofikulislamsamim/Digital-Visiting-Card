@@ -120,7 +120,7 @@ const DEFAULT_SUPABASE_ANON_KEY = "your-anon-key-here";
 
 ### 7. How to Deploy to GitHub Pages
 
-The application uses relative paths (`./css/style.css`, `./js/app.js`, etc.) specifically designed to work inside any GitHub Pages subfolder (e.g., `https://shofikulislamsamim.github.io/kds-digital-card/`).
+The application uses relative paths (`./css/style.css`, `./js/app.js`, etc.) specifically designed to work inside any GitHub Pages subfolder (e.g., `https://shofikulislamsamim.github.io/Digital-Visiting-Card/`).
 
 1. Create a new GitHub repository named `kds-digital-card`.
 2. Push or upload all repository files (`index.html`, `business.html`, `admin.html`, `css/`, `js/`, `assets/`, `supabase.sql`).
