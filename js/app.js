@@ -249,64 +249,87 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
   const canvas = document.getElementById(canvasId);
   const downloadBtn = document.getElementById(downloadBtnId);
   const shareBtn = document.getElementById(shareBtnId);
-
   if (!canvas) return;
 
-  // Determine active public URL
-  const currentUrl = explicitUrl || window.location.href.split("#")[0];
-
-  // Check if QRCode library is available
-  if (typeof QRCode !== "undefined") {
-    // Generate high-resolution QR
-    QRCode.toCanvas(canvas, currentUrl, {
-      width: 180,
-      margin: 1,
-      color: {
-        dark: "#0f172a",
-        light: "#ffffff"
+  // Always build a valid absolute URL. If saved publicUrl is invalid or stale,
+  // fall back to the current page so the QR can never encode a broken target.
+  let currentUrl = window.location.href.split("#")[0];
+  try {
+    const candidate = String(explicitUrl || "").trim();
+    if (candidate) {
+      const parsed = new URL(candidate, window.location.href);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        parsed.hash = "";
+        currentUrl = parsed.href;
       }
-    }, (error) => {
-      if (error) console.error("[KDS] Error rendering QR Code:", error);
-    });
-  } else {
-    // Fallback QR code via API if library hasn't loaded yet
-    console.warn("[KDS] QRCode library not loaded, using fallback");
-    const parent = canvas.parentElement;
-    if (parent) {
-      const img = document.createElement("img");
-      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentUrl)}&margin=1`;
-      img.alt = "QR Code";
-      img.width = 180;
-      img.height = 180;
-      canvas.replaceWith(img);
     }
+  } catch (err) {
+    console.warn("[KDS] Invalid QR target URL; using current page.", err);
   }
 
-  // Download QR Code button
+  const renderQr = () => {
+    if (typeof QRCode === "undefined" || typeof QRCode.toCanvas !== "function") {
+      console.error("[KDS] QRCode library is not available.");
+      return false;
+    }
+
+    try {
+      // Clear any previous QR before generating a new one.
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      QRCode.toCanvas(canvas, currentUrl, {
+        width: 220,
+        margin: 2,
+        errorCorrectionLevel: "H",
+        color: {
+          dark: "#0f172a",
+          light: "#ffffff"
+        }
+      }, (error) => {
+        if (error) console.error("[KDS] QR generation failed:", error);
+      });
+      canvas.dataset.qrUrl = currentUrl;
+      return true;
+    } catch (err) {
+      console.error("[KDS] QR generation failed:", err);
+      return false;
+    }
+  };
+
+  // qrcode.js is loaded before app.js on the public pages, so this should
+  // normally render immediately. A short retry handles slow script execution.
+  if (!renderQr()) {
+    let attempts = 0;
+    const retry = setInterval(() => {
+      attempts += 1;
+      if (renderQr() || attempts >= 20) clearInterval(retry);
+    }, 150);
+  }
+
   if (downloadBtn) {
     downloadBtn.addEventListener("click", (e) => {
       e.preventDefault();
       try {
-        let dataUrl = "";
-        const activeCanvas = document.getElementById(canvasId);
-        if (activeCanvas && activeCanvas.toDataURL) {
-          dataUrl = activeCanvas.toDataURL("image/png");
-        } else {
-          dataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(currentUrl)}`;
+        if (!canvas.dataset.qrUrl) {
+          renderQr();
         }
+        const dataUrl = canvas.toDataURL("image/png");
         const link = document.createElement("a");
-        link.download = `KDS_${(shareTitle || "Digital_Card").replace(/[^\w\s-]/g, "").replace(/\s+/g, "_")}_QR.png`;
+        link.download = `KDS_${(shareTitle || "Digital_Card")
+          .replace(/[^\\w\\s-]/g, "")
+          .replace(/\\s+/g, "_")}_QR.png`;
         link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        link.remove();
       } catch (err) {
         console.error("[KDS] Failed to download QR Code:", err);
+        showToast("QR Code is not ready yet. Please try again.");
       }
     });
   }
 
-  // Web Share API
   if (shareBtn) {
     shareBtn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -318,10 +341,9 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
             url: currentUrl
           });
         } catch (err) {
-          // User cancelled or aborted share
+          // User cancelled the native share sheet.
         }
       } else {
-        // Fallback: copy to clipboard
         try {
           await navigator.clipboard.writeText(currentUrl);
           showToast("Link copied to clipboard!");
