@@ -313,6 +313,7 @@ function populateAllForms(data) {
   const p = data.personal || {};
   const b = data.business || {};
   const s = data.settings || {};
+  const branding = data.branding || s.branding || {};
 
   // Personal Profile Fields
   setValue("admPersonalName", p.name);
@@ -339,9 +340,16 @@ function populateAllForms(data) {
   setValue("admBusinessLogoUrl", b.logoUrl);
 
   const logoThumb = document.getElementById("admBusinessLogoPreview");
-  if (logoThumb) {
-    logoThumb.src = b.logoUrl || "./assets/placeholders/logo.jpg";
-  }
+  if (logoThumb) logoThumb.src = b.logoUrl || "./assets/placeholders/logo.jpg";
+
+  setValue("admBrandLogoUrl", branding.logoUrl || b.logoUrl || "");
+  setValue("admCardLogoUrl", branding.cardLogoUrl || branding.logoUrl || b.logoUrl || "");
+  setValue("admFaviconUrl", branding.faviconUrl || branding.logoUrl || b.logoUrl || "");
+  setValue("admAdminLogoUrl", branding.adminLogoUrl || branding.logoUrl || b.logoUrl || "");
+  [["admBrandLogoPreview","admBrandLogoUrl"],["admCardLogoPreview","admCardLogoUrl"],["admFaviconPreview","admFaviconUrl"],["admAdminLogoPreview","admAdminLogoUrl"]].forEach(([img,id]) => {
+    const el=document.getElementById(img), url=document.getElementById(id)?.value;
+    if(el && url) el.src=url;
+  });
 
   // Personal Social Standard Fields
   const pSocials = data.personalSocials || [];
@@ -449,12 +457,13 @@ function setupImageUploads() {
   );
 
   // 2. Business Logo Upload
-  setupUploader(
-    "admBusinessLogoFile",
-    "admBusinessLogoPreview",
-    "admBusinessLogoUrl",
-    "logo"
-  );
+  setupUploader("admBusinessLogoFile","admBusinessLogoPreview","admBusinessLogoUrl","logo");
+
+  // 3-6. All other site branding assets
+  setupUploader("admBrandLogoFile","admBrandLogoPreview","admBrandLogoUrl","brand_logo");
+  setupUploader("admCardLogoFile","admCardLogoPreview","admCardLogoUrl","card_logo");
+  setupUploader("admFaviconFile","admFaviconPreview","admFaviconUrl","favicon");
+  setupUploader("admAdminLogoFile","admAdminLogoPreview","admAdminLogoUrl","admin_logo");
 }
 
 function setupUploader(fileInputId, previewImgId, urlInputId, folderType) {
@@ -1207,6 +1216,12 @@ async function saveAllChanges() {
       business,
       businessSocials,
       services: adminState.servicesList,
+      branding: {
+        logoUrl: getValue("admBrandLogoUrl") || getValue("admBusinessLogoUrl") || "",
+        cardLogoUrl: getValue("admCardLogoUrl") || getValue("admBrandLogoUrl") || "",
+        faviconUrl: getValue("admFaviconUrl") || getValue("admBrandLogoUrl") || "",
+        adminLogoUrl: getValue("admAdminLogoUrl") || getValue("admBrandLogoUrl") || ""
+      },
       settings
     };
 
