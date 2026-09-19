@@ -1417,3 +1417,12 @@ body {
 .connect-option-icon[data-platform="tiktok"] { color:#fff; background:#000; }
 .connect-option-icon[data-platform="instagram"] { color:#ff0069; background:rgba(255,0,105,.10); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
+
+/* Instagram brand icon: keep the official filled mark visible on the dark card */
+.social-icon-link[data-platform="instagram"] svg,
+.social-icon-link[data-platform="instagram"] .social-brand-icon,
+.social-icon-link.instagram svg {
+  fill: currentColor !important;
+  stroke: none !important;
+  color: #ff0069 !important;
+}
