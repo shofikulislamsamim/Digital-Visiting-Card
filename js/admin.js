@@ -1255,7 +1255,7 @@ async function saveAllChanges() {
     };
 
     // Always commit to Local Storage first for reliable local state preservation
-    localStorage.setItem("KDS_LOCAL_DATA", JSON.stringify(updatedSiteData));
+
     adminState.data = updatedSiteData;
 
     // 6. Save to Supabase Database if client is configured
@@ -1512,7 +1512,7 @@ function setupSettingsForm() {
           renderCustomSocials();
           renderQrPreviews();
           updateOverviewStats();
-          localStorage.setItem("KDS_LOCAL_DATA", JSON.stringify(data.data));
+
           showToast("Supabase connected! Existing site data (kds_main) loaded successfully.", "success");
         } else {
           // Table is accessible, but kds_main row doesn't exist yet - upsert initial data
