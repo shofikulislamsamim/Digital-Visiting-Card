@@ -39,7 +39,7 @@ as $$
 declare
   current_email text;
 begin
-  current_email := pg_catalog.lower(pg_catalog.coalesce(auth.jwt() ->> 'email', ''));
+  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
   if current_email = '' then
     return false;
   end if;
@@ -125,7 +125,8 @@ create policy "Admin update on kds-assets"
   on storage.objects
   for update
   to authenticated
-  using (bucket_id = 'kds-assets' and public.is_admin());
+  using (bucket_id = 'kds-assets' and public.is_admin())
+  with check (bucket_id = 'kds-assets' and public.is_admin());
 
 -- D. Authorized admin can delete images in kds-assets
 drop policy if exists "Admin delete on kds-assets" on storage.objects;
