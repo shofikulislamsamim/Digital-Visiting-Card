@@ -114,18 +114,26 @@ function renderPersonalPage(data) {
     btnLivePdf.addEventListener("click", () => generateLivePdf(data));
   }
 
-  // Save Contact: use the universal vCard method.
-  // This is the most reliable web-based option across Android, iPhone, and desktop.
-  const handleVCardDownload = (e) => {
+  // Save Contact + Live PDF: one click downloads both files.
+  // vCard starts immediately; PDF generation follows from the same user action.
+  const handleVCardDownload = async (e) => {
     if (e) e.preventDefault();
     window.KDS.downloadVCard(p);
+    showConnectModal(data);
+  };
+
+  const handleContactAndPdfDownload = async (e) => {
+    if (e) e.preventDefault();
+    window.KDS.downloadVCard(p);
+    await generateLivePdf(data, { silent: true });
+    showToast("Contact (.vcf) and Live PDF downloaded.");
     showConnectModal(data);
   };
 
   setupConnectModal();
 
   if (btnVCard) btnVCard.addEventListener("click", handleVCardDownload);
-  if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleVCardDownload);
+  if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleContactAndPdfDownload);
 
   // Render Personal Social Links (Icons only, no raw URLs)
   const socialsContainer = document.getElementById("personalSocialsList");
@@ -409,7 +417,7 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
   }
 }
 
-async function generateLivePdf(data) {
+async function generateLivePdf(data, options = {}) {
   try {
     const jsPDF = window.jspdf?.jsPDF;
     if (!jsPDF) {
@@ -569,7 +577,7 @@ async function generateLivePdf(data) {
 
     const safeName = name.replace(/[^a-z0-9\\s-]/gi, "").trim().replace(/\\s+/g, "_") || "KDS_Digital_Card";
     doc.save(`${safeName}_Live_Digital_Card.pdf`);
-    showToast("Live PDF downloaded. Links inside the PDF are clickable.");
+    if (!options.silent) showToast("Live PDF downloaded. Links inside the PDF are clickable.");
   } catch (err) {
     console.error("[KDS] Live PDF generation failed:", err);
     showToast("Live PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
