@@ -232,28 +232,40 @@ function normalizeUrl(rawUrl) {
 }
 
 // 6. VCARD GENERATOR (RFC 2426 Compliant)
-function downloadVCard(personalData) {
+function downloadVCard(personalData, socialData) {
   const p = personalData || DEFAULT_SITE_DATA.personal;
+  const socials = Array.isArray(socialData) && socialData.length
+    ? socialData
+    : (DEFAULT_SITE_DATA.personalSocials || []);
   const fullName = (p.name || "Shofikul Islam Samim").trim();
   const org = p.company || "Khan Digital Solution";
   const title = p.designation || "Owner & CEO";
   const phone = p.phoneFormatted || p.phone || "+8801744188460";
   const wa = p.whatsappFormatted ? `+${p.whatsappFormatted}` : phone;
   const email = p.email || "samim.khanmiyaa@gmail.com";
-  const note = (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " ");
   const url = normalizeUrl(p.website) || window.location.href;
 
-  // Split name for standard vCard N property: N:FamilyName;GivenName;Additional;Prefix;Suffix
   const nameParts = fullName.split(/\s+/);
   const familyName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
   const givenName = nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : fullName;
 
-  // Escape vCard text so company/title/name are preserved correctly in Contacts.
   const esc = (value) => String(value || "")
     .replace(/\\/g, "\\\\")
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
     .replace(/\r?\n/g, "\\n");
+
+  const activeSocials = socials
+    .filter(item => item && item.active !== false && item.url)
+    .map(item => ({ platform: item.platform || "Social", url: normalizeUrl(item.url) }))
+    .filter(item => item.url);
+
+  const socialNote = activeSocials.map(item => `${item.platform}: ${item.url}`).join("\n");
+  const noteParts = [
+    (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " "),
+    socialNote ? `Social Profiles:\n${socialNote}` : ""
+  ].filter(Boolean);
+  const note = noteParts.join("\n\n");
 
   const vCardLines = [
     "BEGIN:VCARD",
@@ -267,6 +279,7 @@ function downloadVCard(personalData) {
     `EMAIL;TYPE=INTERNET,PREF:${esc(email)}`,
     `URL:${esc(url)}`,
     `NOTE:${esc(note)}`,
+    ...activeSocials.map(item => `X-SOCIALPROFILE;TYPE=${esc(item.platform)}:${esc(item.url)}`),
     "REV:" + new Date().toISOString(),
     "END:VCARD"
   ];
@@ -280,7 +293,7 @@ function downloadVCard(personalData) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(downloadUrl);
+  setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 }
 
 // 7. SVG ICONS DICTIONARY
