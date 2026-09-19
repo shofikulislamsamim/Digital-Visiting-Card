@@ -1418,21 +1418,19 @@ body {
 .connect-option-icon[data-platform="instagram"] { color:#ff0069; background:rgba(255,0,105,.10); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Instagram brand icon: explicit fill so it stays visible in every social/Connect context */
+/* Instagram uses the same single-color treatment as the other social icons */
 .social-icon-link[data-platform="instagram"] svg,
 .social-icon-link.instagram svg,
 .connect-option-icon[data-platform="instagram"] svg {
-  fill: #E1306C !important;
+  fill: currentColor !important;
   stroke: none !important;
-  color: #E1306C !important;
+  color: inherit !important;
 }
-.connect-option-icon[data-platform="instagram"] svg rect {
-  fill: #E1306C !important;
+.connect-option-icon[data-platform="instagram"] svg rect,
+.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
+  fill: currentColor !important;
 }
 .connect-option-icon[data-platform="instagram"] svg circle:first-of-type {
   fill: none !important;
-  stroke: #FFFFFF !important;
-}
-.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
-  fill: #FFFFFF !important;
+  stroke: currentColor !important;
 }
