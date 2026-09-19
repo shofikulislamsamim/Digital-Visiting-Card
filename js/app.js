@@ -111,7 +111,7 @@ function renderPersonalPage(data) {
   // Save Contact: downloads a complete vCard containing contact details and social links.
   const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
-    window.KDS.downloadVCard(p, data.personalSocials || []);
+    window.KDS.downloadVCard(p);
     showToast("Contact saved. You can import it into your phone Contacts.");
     showConnectModal(data);
   };
