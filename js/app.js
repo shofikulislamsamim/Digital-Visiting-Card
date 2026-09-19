@@ -53,9 +53,9 @@ function renderPersonalPage(data) {
   const elBio = document.getElementById("personalBio");
 
   if (elAvatar) {
-    elAvatar.src = p.photoUrl || "./assets/placeholders/avatar.jpg";
+    elAvatar.src = p.photoUrl || window.KDS.DEFAULT_SITE_DATA.personal.photoUrl;
     elAvatar.onerror = () => {
-      elAvatar.src = "./assets/placeholders/avatar.jpg";
+      elAvatar.src = window.KDS.DEFAULT_SITE_DATA.personal.photoUrl;
     };
   }
   if (elName) elName.textContent = p.name || "Shofikul Islam Samim";
@@ -141,9 +141,9 @@ function renderBusinessPage(data) {
   const elAbout = document.getElementById("businessAbout");
 
   if (elLogo) {
-    elLogo.src = b.logoUrl || "./assets/placeholders/logo.jpg";
+    elLogo.src = b.logoUrl || window.KDS.DEFAULT_SITE_DATA.business.logoUrl;
     elLogo.onerror = () => {
-      elLogo.src = "./assets/placeholders/logo.jpg";
+      elLogo.src = window.KDS.DEFAULT_SITE_DATA.business.logoUrl;
     };
   }
   if (elName) elName.textContent = b.name || "Khan Digital Solution";
