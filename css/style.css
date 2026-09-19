@@ -2326,3 +2326,25 @@ body {
     border: 0;
   }
 }
+
+
+/* Personal profile: explicitly match the business profile's KDS blue border. */
+.profile-card .avatar-wrapper {
+  padding: 4px;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .profile-card .avatar-wrapper {
+    padding: 4px;
+    border: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-card .avatar-wrapper {
+    padding: 4px;
+    border: 0;
+  }
+}
