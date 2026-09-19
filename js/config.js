@@ -6,15 +6,15 @@
 // 1. SUPABASE PROJECT CREDENTIALS
 // Configured for Khan Digital Solution
 const DEFAULT_SUPABASE_URL = "https://sypwzqawdxgxzmwimjbp.supabase.co";
-const DEFAULT_SUPABASE_ANON_KEY = "";
+const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_bnI3nXmXgqf9CQIfMdVR4w_rftT8yPj";
 
 // Dynamic credentials getter to ensure immediate updates without stale references
 function getActiveSupabaseUrl() {
-  return (localStorage.getItem("KDS_SUPABASE_URL") || DEFAULT_SUPABASE_URL || "").trim().replace(/\/+$/, "");
+  return DEFAULT_SUPABASE_URL;
 }
 
 function getActiveSupabaseAnonKey() {
-  return (localStorage.getItem("KDS_SUPABASE_ANON_KEY") || DEFAULT_SUPABASE_ANON_KEY || "").trim();
+  return DEFAULT_SUPABASE_ANON_KEY;
 }
 
 // Check if Supabase has been configured with valid URL and publishable/anon key
@@ -37,7 +37,7 @@ const DEFAULT_SITE_DATA = {
     email: "samim.khanmiyaa@gmail.com",
     bio: "Passionate entrepreneur, creative technologist, and digital strategist dedicated to scaling modern brands through data-driven marketing, premier design, and cutting-edge web solutions.",
     photoUrl: "./assets/placeholders/avatar.jpg",
-    website: "https://shofikulislamsamim.github.io/kds-digital-card/"
+    website: "https://shofikulislamsamim.github.io/Digital-Visiting-Card/"
   },
   personalSocials: [
     { id: "p_fb", platform: "Facebook", icon: "facebook", url: "https://facebook.com/kds.samim", active: true },
@@ -56,7 +56,7 @@ const DEFAULT_SITE_DATA = {
     whatsappFormatted: "8801744188460",
     email: "samim.khanmiyaa@gmail.com",
     logoUrl: "./assets/placeholders/logo.jpg",
-    website: "https://shofikulislamsamim.github.io/kds-digital-card/business.html"
+    website: "https://shofikulislamsamim.github.io/Digital-Visiting-Card/business.html"
   },
   businessSocials: [
     { id: "b_fb", platform: "Facebook", icon: "facebook", url: "https://facebook.com/KhanDigitalSolution", active: true },
@@ -103,7 +103,7 @@ const DEFAULT_SITE_DATA = {
     }
   ],
   settings: {
-    publicUrl: "https://shofikulislamsamim.github.io/kds-digital-card/",
+    publicUrl: "https://shofikulislamsamim.github.io/Digital-Visiting-Card/",
     themeColor: "#0f172a",
     accentColor: "#0284c7"
   }
