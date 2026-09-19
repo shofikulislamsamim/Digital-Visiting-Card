@@ -62,7 +62,7 @@
   </div>
 
   <!-- SECTION 1: AUTHENTICATION VIEW (Shown when explicitly logged out) -->
-  <div id="adminAuthSection" class="admin-auth-box hidden">
+  <div id="adminAuthSection" class="admin-auth-box">
     <div class="auth-header-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:28px;height:28px;">
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -108,8 +108,8 @@
     </div>
   </div>
 
-  <!-- SECTION 2: MAIN ADMIN DASHBOARD (Visible on Load) -->
-  <div id="adminDashboardSection" class="admin-container">
+  <!-- SECTION 2: MAIN ADMIN DASHBOARD (Hidden until authenticated and authorized) -->
+  <div id="adminDashboardSection" class="admin-container hidden" style="display:none;">
 
     <!-- Top Admin Bar -->
     <nav class="admin-navbar">
