@@ -152,7 +152,7 @@ values (
       "email": "samim.khanmiyaa@gmail.com",
       "bio": "Passionate entrepreneur, creative technologist, and digital strategist dedicated to scaling modern brands through data-driven marketing, premier design, and cutting-edge web solutions.",
       "photoUrl": "./assets/placeholders/avatar.jpg",
-      "website": "https://shofikulislamsamim.github.io/kds-digital-card/"
+      "website": "https://shofikulislamsamim.github.io/Digital-Visiting-Card/"
     },
     "personalSocials": [
       { "id": "p_fb", "platform": "Facebook", "icon": "facebook", "url": "https://facebook.com/kds.samim", "active": true },
@@ -171,7 +171,7 @@ values (
       "whatsappFormatted": "8801744188460",
       "email": "samim.khanmiyaa@gmail.com",
       "logoUrl": "./assets/placeholders/logo.jpg",
-      "website": "https://shofikulislamsamim.github.io/kds-digital-card/business.html"
+      "website": "https://shofikulislamsamim.github.io/Digital-Visiting-Card/business.html"
     },
     "businessSocials": [
       { "id": "b_fb", "platform": "Facebook", "icon": "facebook", "url": "https://facebook.com/KhanDigitalSolution", "active": true },
@@ -218,7 +218,7 @@ values (
       }
     ],
     "settings": {
-      "publicUrl": "https://shofikulislamsamim.github.io/kds-digital-card/",
+      "publicUrl": "https://shofikulislamsamim.github.io/Digital-Visiting-Card/",
       "themeColor": "#0f172a",
       "accentColor": "#0284c7"
     }
