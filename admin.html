@@ -399,6 +399,24 @@
       <div class="service-card" style="padding: 24px;">
         <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;">Business Profile Details <span class="bengali-hint">(প্রতিষ্ঠানের বিবরণ)</span></h3>
 
+        <!-- Business Profile Cover Photo Upload Box -->
+        <div class="form-group">
+          <label class="form-label">Business Profile Cover Photo <span class="bengali-hint">(বিজনেস কভার ফটো)</span></label>
+          <div class="image-upload-box">
+            <div class="image-preview-row">
+              <img id="admBusinessCoverPreview" src="./assets/placeholders/logo.jpg" alt="Business Cover Preview" class="preview-cover-thumb" />
+              <div class="file-input-wrapper">
+                <input type="file" id="admBusinessCoverFile" accept="image/*" class="form-input" style="padding: 6px;" />
+                <span style="font-size: 0.78rem; color: var(--text-subtle);">Upload a separate Facebook-style cover photo for the Business Profile.</span>
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.75rem;">Direct Cover URL (Optional override):</label>
+              <input type="text" id="admBusinessCoverUrl" class="form-input" placeholder="Uploaded business cover URL" />
+            </div>
+          </div>
+        </div>
+
         <!-- Logo Upload Box -->
         <div class="form-group">
           <label class="form-label">Business Logo <span class="bengali-hint">(প্রতিষ্ঠানের লোগো)</span></label>
