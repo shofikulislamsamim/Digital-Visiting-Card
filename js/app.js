@@ -133,12 +133,10 @@ function renderPersonalPage(data) {
       });
   }
 
-  // Determine QR Code URL
-  let targetUrl = window.location.href.split("#")[0];
-  if (data.settings && data.settings.publicUrl && data.settings.publicUrl.trim().startsWith("http")) {
-    const base = data.settings.publicUrl.trim().replace(/\/+$/, "");
-    targetUrl = `${base}/`;
-  }
+  // QR target is always the live deployed personal card URL.
+  // Do not use an admin-saved publicUrl here: a stale/mistyped setting can make
+  // a valid QR code open an invalid destination.
+  const targetUrl = new URL("./", window.location.href).href.split("#")[0];
 
   // Generate QR Code
   initQrCode("personalQrCanvas", "btnDownloadQr", "btnShareCard", p.name, targetUrl);
@@ -231,12 +229,9 @@ function renderBusinessPage(data) {
       });
   }
 
-  // Determine QR Code URL for Business
-  let targetUrl = window.location.href.split("#")[0];
-  if (data.settings && data.settings.publicUrl && data.settings.publicUrl.trim().startsWith("http")) {
-    const base = data.settings.publicUrl.trim().replace(/\/+$/, "");
-    targetUrl = `${base}/business.html`;
-  }
+  // QR target is always this deployed business profile page.
+  // This avoids stale/mistyped admin publicUrl values causing scan errors.
+  const targetUrl = new URL("./business.html", window.location.href).href.split("#")[0];
 
   // Generate QR Code
   initQrCode("businessQrCanvas", "btnDownloadBizQr", "btnShareBizCard", b.name, targetUrl);
