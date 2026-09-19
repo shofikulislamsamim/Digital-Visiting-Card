@@ -1418,8 +1418,15 @@ body {
 
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Connect Instagram keeps the original multicolor logo */
+/* Only the Contact Saved modal uses Instagram's official multicolor logo */
 .connect-option-icon[data-platform="instagram"] {
   color: #fff !important;
-  background: rgba(255,255,255,.05) !important;
+  background: transparent !important;
+}
+.connect-option-icon[data-platform="instagram"] .connect-brand-icon {
+  width: 25px;
+  height: 25px;
+  display: block;
+  fill: none !important;
+  stroke: none !important;
 }
