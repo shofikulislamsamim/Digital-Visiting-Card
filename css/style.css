@@ -171,22 +171,45 @@ body {
 }
 
 .profile-card::before {
+  display: none;
+}
+
+/* Facebook-style cover photo */
+.profile-cover {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 156px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 42%, #0f172a 100%);
+}
+.profile-cover::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 130px;
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 40%, #0f172a 100%);
-  opacity: 0.9;
-  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.28) 100%);
+  pointer-events: none;
+}
+.profile-cover-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+.profile-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(56,189,248,.42), transparent 34%),
+    linear-gradient(135deg, #0284c7 0%, #0369a1 42%, #0f172a 100%);
 }
 
 /* Header & Avatar */
 .card-header {
   position: relative;
   z-index: 2;
-  padding: 40px 24px 20px;
+  padding: 0 24px 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -195,12 +218,13 @@ body {
 
 .avatar-wrapper {
   position: relative;
-  width: 116px;
-  height: 116px;
+  width: 146px;
+  height: 146px;
   border-radius: 50%;
   padding: 4px;
   background: linear-gradient(135deg, #38bdf8, #0284c7);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  margin-top: -73px;
   margin-bottom: 16px;
 }
 
@@ -217,8 +241,8 @@ body {
   position: absolute;
   bottom: 6px;
   right: 6px;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   background-color: var(--accent-whatsapp);
   border: 2.5px solid var(--bg-card);
   border-radius: 50%;
@@ -1429,4 +1453,16 @@ body {
   display: block;
   fill: none !important;
   stroke: none !important;
+}
+
+
+@media (max-width: 480px) {
+  .profile-cover {
+    height: 145px;
+  }
+  .avatar-wrapper {
+    width: 136px;
+    height: 136px;
+    margin-top: -68px;
+  }
 }
