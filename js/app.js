@@ -4,13 +4,6 @@
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Routing helper for admin navigation (e.g. /#admin or /?admin)
-  const searchParams = new URLSearchParams(window.location.search);
-  if (searchParams.has("admin") || searchParams.get("page") === "admin" || window.location.hash === "#admin") {
-    window.location.href = "./admin.html";
-    return;
-  }
-
   // 1. Check Supabase Configuration Banner
   const configBanner = document.getElementById("supabaseConfigBanner");
   if (configBanner) {
