@@ -172,7 +172,8 @@ function deepMergeSiteData(loaded) {
       cardLogoUrl: "",
       faviconUrl: "",
       adminLogoUrl: "",
-      coverUrl: ""
+      coverUrl: "",
+      businessCoverUrl: ""
     }, loaded.branding || (loaded.settings && loaded.settings.branding) || {}),
     personalSocials: sanitizeSocials(loaded.personalSocials, DEFAULT_SITE_DATA.personalSocials),
     businessSocials: sanitizeSocials(loaded.businessSocials, DEFAULT_SITE_DATA.businessSocials),
