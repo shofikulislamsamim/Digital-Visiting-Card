@@ -469,6 +469,8 @@ function setupImageUploads() {
   setupUploader("admCardLogoFile","admCardLogoPreview","admCardLogoUrl","card_logo");
   setupUploader("admFaviconFile","admFaviconPreview","admFaviconUrl","favicon");
   setupUploader("admAdminLogoFile","admAdminLogoPreview","admAdminLogoUrl","admin_logo");
+  // 7. Personal Profile Cover Photo Upload
+  setupUploader("admProfileCoverFile","admProfileCoverPreview","admProfileCoverUrl","profile_cover");
 }
 
 function setupUploader(fileInputId, previewImgId, urlInputId, folderType) {
