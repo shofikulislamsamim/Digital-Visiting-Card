@@ -33,6 +33,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 /**
  * Render Personal Profile (index.html)
  */
@@ -154,7 +163,10 @@ function renderPersonalPage(data) {
  * Render Business Profile (business.html)
  */
 function renderBusinessPage(data) {
-  const b = data.business || {};
+  // Apply shared branding first so the business page uses the same saved logo/favicon.
+  applySiteBranding(data);
+
+  const b = (data && data.business && typeof data.business === "object") ? data.business : {};
 
   // Use the same cover photo system as the personal profile.
   const coverUrl = data?.branding?.businessCoverUrl || data?.branding?.coverUrl || "";
@@ -206,9 +218,12 @@ function renderBusinessPage(data) {
 
   // Render Business Social Links (Independent from personal)
   const socialsContainer = document.getElementById("businessSocialsList");
-  if (socialsContainer && Array.isArray(data.businessSocials)) {
+  if (socialsContainer) {
     socialsContainer.innerHTML = "";
-    data.businessSocials
+    const businessSocials = Array.isArray(data?.businessSocials)
+      ? data.businessSocials
+      : (window.KDS.DEFAULT_SITE_DATA.businessSocials || []);
+    businessSocials
       .filter(item => {
         if (item.active === false || !item.url || !item.url.trim()) return false;
         const id = (item.id || "").toLowerCase();
@@ -237,10 +252,14 @@ function renderBusinessPage(data) {
 
   // Render Services
   const servicesContainer = document.getElementById("businessServicesList");
-  if (servicesContainer && Array.isArray(data.services)) {
+  if (servicesContainer) {
     servicesContainer.innerHTML = "";
-    data.services
-      .filter(srv => srv.active !== false)
+    const services = Array.isArray(data?.services) && data.services.length
+      ? data.services
+      : (window.KDS.DEFAULT_SITE_DATA.services || []);
+    const visibleServices = services.filter(srv => srv && srv.active !== false);
+
+    visibleServices
       .forEach(srv => {
         const card = document.createElement("div");
         card.className = "service-card";
