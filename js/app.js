@@ -112,8 +112,7 @@ function renderPersonalPage(data) {
   const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
     window.KDS.downloadVCard(p, data.personalSocials || []);
-    showToast("Contact saved. You can import it into your phone Contacts.");
-    showConnectModal(data);
+    showToast("Contact vCard downloaded. You can import it into your phone Contacts.");
   };
 
   setupConnectModal();
