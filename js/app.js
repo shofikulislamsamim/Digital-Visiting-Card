@@ -199,6 +199,7 @@ function renderBusinessPage(data) {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.className = "social-icon-link";
+        link.setAttribute("data-platform", String(item.platform || item.icon || "").toLowerCase().trim());
         link.setAttribute("data-tooltip", item.platform);
         link.setAttribute("aria-label", item.platform);
         link.id = `biz_social_${item.id || item.platform.toLowerCase().replace(/\s+/g, "_")}`;
