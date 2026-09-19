@@ -1577,3 +1577,464 @@ body {
     margin-top: -68px;
   }
 }
+
+
+/* ==============================================================================
+   Mobile / Android optimization
+   Designed for 320px–480px touch screens, safe areas and Android browsers.
+   ============================================================================== */
+html {
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+img, svg, canvas {
+  max-width: 100%;
+}
+
+button, a, input, textarea, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a.btn-action, a.btn-save-contact, .social-icon-link {
+  touch-action: manipulation;
+}
+
+@media (max-width: 600px) {
+  .page-container,
+  .business-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 10px calc(28px + env(safe-area-inset-bottom));
+    gap: 12px;
+  }
+
+  .profile-card,
+  .business-hero {
+    width: 100%;
+    border-radius: 18px;
+  }
+
+  .profile-cover {
+    height: clamp(118px, 34vw, 145px);
+  }
+
+  .card-header {
+    padding: 0 14px 16px;
+  }
+
+  .avatar-wrapper,
+  .business-profile-logo {
+    width: 112px;
+    height: 112px;
+    margin-top: -56px;
+    margin-bottom: 12px;
+  }
+
+  .status-badge {
+    width: 16px;
+    height: 16px;
+    right: 4px;
+    bottom: 4px;
+    border-width: 2px;
+  }
+
+  .founder-name {
+    max-width: 100%;
+    font-size: clamp(1.25rem, 6vw, 1.5rem);
+    line-height: 1.18;
+    overflow-wrap: anywhere;
+  }
+
+  .founder-title {
+    font-size: .88rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .company-badge {
+    max-width: 100%;
+    padding: 4px 10px;
+    font-size: .78rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .founder-bio {
+    max-width: 100%;
+    padding: 0 4px;
+    margin-top: 10px;
+    font-size: .84rem;
+    line-height: 1.5;
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+    padding: 0 12px 14px;
+  }
+
+  .btn-action {
+    min-width: 0;
+    min-height: 64px;
+    padding: 9px 3px;
+    border-radius: 11px;
+    font-size: .68rem;
+    line-height: 1.15;
+    gap: 5px;
+  }
+
+  .btn-action svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-save-contact {
+    width: calc(100% - 24px);
+    margin: 0 12px 14px;
+    min-height: 48px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: .9rem;
+  }
+
+  .socials-section {
+    padding: 0 12px 18px;
+  }
+
+  .section-title {
+    font-size: .72rem;
+    margin-bottom: 9px;
+  }
+
+  .social-icons-list {
+    gap: 8px;
+  }
+
+  .social-icon-link {
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+  }
+
+  .social-icon-link svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  /* Tooltips are not useful on touch screens. */
+  .social-icon-link[data-tooltip]::before {
+    display: none;
+  }
+
+  .card-nav-switch {
+    padding: 13px 14px;
+    min-height: 52px;
+    gap: 10px;
+  }
+
+  .switch-content {
+    min-width: 0;
+  }
+
+  .switch-title,
+  .switch-subtitle {
+    overflow-wrap: anywhere;
+  }
+
+  /* Business profile */
+  .business-hero {
+    padding: 0 14px 20px;
+  }
+
+  .business-profile-cover {
+    width: calc(100% + 28px);
+    margin-left: -14px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .business-name {
+    max-width: 100%;
+    font-size: clamp(1.35rem, 6.5vw, 1.65rem);
+    line-height: 1.18;
+    overflow-wrap: anywhere;
+  }
+
+  .business-tagline {
+    font-size: .88rem;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+
+  .business-about {
+    max-width: 100%;
+    margin-bottom: 16px;
+    padding: 0 2px;
+    font-size: .82rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .services-section {
+    gap: 10px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .service-card {
+    padding: 14px;
+    gap: 8px;
+    border-radius: 14px;
+  }
+
+  .service-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .service-icon-box svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .service-title {
+    font-size: .92rem;
+    line-height: 1.25;
+  }
+
+  .service-desc {
+    font-size: .77rem;
+    line-height: 1.45;
+  }
+
+  /* QR section stays compact and centered */
+  .qr-card {
+    padding: 14px !important;
+    overflow: hidden;
+  }
+
+  .qr-frame {
+    width: min(220px, 72vw);
+    height: min(220px, 72vw);
+    margin: 0 auto;
+  }
+
+  .qr-frame canvas,
+  .qr-frame .qr-generated-image {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+  }
+
+  .qr-actions,
+  .qr-card .actions,
+  .qr-card .button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .qr-actions button,
+  .qr-card button {
+    min-height: 44px;
+    font-size: .8rem;
+  }
+
+  /* Admin also becomes a proper one-column mobile interface. */
+  .admin-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 10px calc(36px + env(safe-area-inset-bottom));
+  }
+
+  .admin-navbar {
+    margin-bottom: 12px;
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .admin-brand {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-brand-title {
+    font-size: .95rem;
+  }
+
+  .admin-nav-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .user-badge {
+    max-width: 65%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .admin-tabs {
+    gap: 5px;
+    margin: 0 -2px 14px;
+    padding: 3px 2px 7px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    min-height: 42px;
+    padding: 9px 12px;
+    font-size: .78rem;
+  }
+
+  .admin-sticky-bar {
+    top: 6px;
+    margin-bottom: 12px;
+    padding: 9px 10px;
+    border-radius: 13px;
+  }
+
+  .sticky-bar-info {
+    font-size: .76rem;
+  }
+
+  .sticky-bar-btns {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sticky-bar-btns button {
+    min-height: 42px;
+  }
+
+  .admin-modal-backdrop {
+    padding: 10px;
+  }
+
+  .admin-modal-card {
+    max-height: calc(100dvh - 20px);
+    padding: 18px 14px;
+    border-radius: 16px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    min-height: 44px;
+    font-size: 16px; /* prevents Android Chrome zoom on focus */
+  }
+
+  .form-textarea {
+    min-height: 100px;
+  }
+
+  .image-upload-box {
+    padding: 12px;
+  }
+
+  .image-upload-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .preview-thumb {
+    width: 84px;
+    height: 84px;
+  }
+
+  .toast-container {
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .toast {
+    width: 100%;
+    font-size: .8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-container,
+  .business-container {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .actions-grid {
+    gap: 5px;
+    padding-left: 9px;
+    padding-right: 9px;
+  }
+
+  .btn-action {
+    font-size: .62rem;
+    min-height: 60px;
+  }
+
+  .social-icon-link {
+    flex-basis: 43px;
+    width: 43px;
+    height: 43px;
+  }
+
+  .social-icon-link svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .business-hero {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .business-profile-cover {
+    width: calc(100% + 20px);
+    margin-left: -10px;
+  }
+
+  .business-profile-logo,
+  .avatar-wrapper {
+    width: 104px;
+    height: 104px;
+    margin-top: -52px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .profile-cover {
+    height: 105px;
+  }
+
+  .avatar-wrapper,
+  .business-profile-logo {
+    width: 92px;
+    height: 92px;
+    margin-top: -46px;
+  }
+
+  .card-header {
+    padding-bottom: 10px;
+  }
+}
