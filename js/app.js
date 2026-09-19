@@ -89,9 +89,44 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
-  // Save Contact / vCard handler + post-save connection options
+  // Save Contact: on Android, open the native Contacts "create contact" screen
+  // with the fields pre-filled. Other platforms keep the vCard fallback.
   const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
+
+    const fullName = String(p.name || data.name || "Shofikul Islam Samim").trim();
+    const company = String(p.company || data.company || "Khan Digital Solution").trim();
+    const title = String(p.designation || p.title || data.designation || "Owner & CEO").trim();
+    const phone = String(p.phoneFormatted || p.phone || "01744188460").trim();
+    const email = String(p.email || "samim.khanmiyaa@gmail.com").trim();
+    const website = String(data.website || window.location.href || "").trim();
+    const note = String(data.tagline || "Your Growth, Our Mission").trim();
+
+    const isAndroid = /Android/i.test(navigator.userAgent || "");
+
+    if (isAndroid) {
+      const add = (key, value) => value ? `S.${key}=${encodeURIComponent(value)};` : "";
+      const intentUrl =
+        "intent:#Intent;" +
+        "action=android.intent.action.INSERT;" +
+        "type=vnd.android.cursor.dir/contact;" +
+        add("name", fullName) +
+        add("phone", phone) +
+        add("email", email) +
+        add("company", company) +
+        add("job_title", title) +
+        add("website", website) +
+        add("notes", note) +
+        "end";
+
+      // Android opens the Contacts app with these fields pre-filled.
+      window.location.href = intentUrl;
+      setTimeout(() => showConnectModal(data), 900);
+      return;
+    }
+
+    // iPhone/iPad/desktop browsers cannot reliably write to the native
+    // Contacts database from a webpage, so retain the universal vCard fallback.
     window.KDS.downloadVCard(p);
     showConnectModal(data);
   };
