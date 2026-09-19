@@ -36,7 +36,7 @@ const DEFAULT_SITE_DATA = {
     whatsappFormatted: "8801744188460",
     email: "samim.khanmiyaa@gmail.com",
     bio: "Passionate entrepreneur, creative technologist, and digital strategist dedicated to scaling modern brands through data-driven marketing, premier design, and cutting-edge web solutions.",
-    photoUrl: "./assets/placeholders/avatar.jpg",
+    photoUrl: "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230f172a'/%3E%3Ccircle cx='256' cy='190' r='86' fill='%230284c7'/%3E%3Cpath d='M108 438c20-92 77-138 148-138s128 46 148 138' fill='%230284c7'/%3E%3C/svg%3E",
     website: "https://shofikulislamsamim.github.io/Digital-Visiting-Card/"
   },
   personalSocials: [
@@ -55,7 +55,7 @@ const DEFAULT_SITE_DATA = {
     whatsapp: "01744-188460",
     whatsappFormatted: "8801744188460",
     email: "samim.khanmiyaa@gmail.com",
-    logoUrl: "./assets/placeholders/logo.jpg",
+    logoUrl: "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230f172a'/%3E%3Ctext x='256' y='290' text-anchor='middle' font-family='Arial,sans-serif' font-size='170' font-weight='700' fill='%230284c7'%3EKDS%3C/text%3E%3C/svg%3E",
     website: "https://shofikulislamsamim.github.io/Digital-Visiting-Card/business.html"
   },
   businessSocials: [
