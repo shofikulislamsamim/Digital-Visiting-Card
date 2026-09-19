@@ -1415,18 +1415,22 @@ body {
 .connect-option-icon[data-platform="whatsapp"] { color:#25d366; background:rgba(37,211,102,.10); }
 .connect-option-icon[data-platform="youtube"] { color:#ff0000; background:rgba(255,0,0,.10); }
 .connect-option-icon[data-platform="tiktok"] { color:#fff; background:#000; }
-.connect-option-icon[data-platform="instagram"] { color:#ff0069; background:rgba(255,0,105,.10); }
+.connect-option-icon[data-platform="instagram"] { color:#fff; background:rgba(255,255,255,.05); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Instagram uses the same single-color treatment as the other social icons */
+/* Instagram uses the same monochrome treatment as the other social icons */
 .social-icon-link[data-platform="instagram"] svg,
 .social-icon-link.instagram svg,
 .connect-option-icon[data-platform="instagram"] svg {
-  fill: currentColor !important;
-  stroke: none !important;
+  fill: none !important;
+  stroke: currentColor !important;
   color: inherit !important;
 }
-.connect-option-icon[data-platform="instagram"] svg rect,
+.social-icon-link[data-platform="instagram"] svg circle:last-of-type,
+.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
+  fill: currentColor !important;
+  stroke: none !important;
+}.connect-option-icon[data-platform="instagram"] svg rect,
 .connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
   fill: currentColor !important;
 }
