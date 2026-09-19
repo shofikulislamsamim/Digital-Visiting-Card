@@ -1410,3 +1410,10 @@ body {
   font-weight: 700;
   cursor: pointer;
 }
+
+.connect-option-icon[data-platform="facebook"] { color:#0866ff; background:rgba(8,102,255,.10); }
+.connect-option-icon[data-platform="whatsapp"] { color:#25d366; background:rgba(37,211,102,.10); }
+.connect-option-icon[data-platform="youtube"] { color:#ff0000; background:rgba(255,0,0,.10); }
+.connect-option-icon[data-platform="tiktok"] { color:#fff; background:#000; }
+.connect-option-icon[data-platform="instagram"] { color:#ff0069; background:rgba(255,0,105,.10); }
+.connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
