@@ -237,6 +237,7 @@ function downloadVCard(personalData, socialData) {
   const socials = Array.isArray(socialData) && socialData.length
     ? socialData
     : (DEFAULT_SITE_DATA.personalSocials || []);
+
   const fullName = (p.name || "Shofikul Islam Samim").trim();
   const org = p.company || "Khan Digital Solution";
   const title = p.designation || "Owner & CEO";
@@ -255,19 +256,22 @@ function downloadVCard(personalData, socialData) {
     .replace(/,/g, "\\,")
     .replace(/\r?\n/g, "\\n");
 
-  // Keep social profiles inside the vCard, but do not create clickable social buttons/actions.
+  // Keep all social profiles inside the vCard, but do not show a social popup.
   const activeSocials = socials
     .filter(item => item && item.active !== false && item.url)
     .map(item => ({ platform: item.platform || "Social", url: normalizeUrl(item.url) }))
     .filter(item => item.url);
 
-  const socialNote = activeSocials.map(item => `${item.platform}: ${item.url}`).join("\n");
-  const noteParts = [
+  const socialNote = activeSocials
+    .map(item => `${item.platform}: ${item.url}`)
+    .join("\n");
+
+  const note = [
     (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " "),
     socialNote ? `Social Profiles:\n${socialNote}` : ""
-  ].filter(Boolean);
+  ].filter(Boolean).join("\n\n");
 
-  const vCardLines = [
+  const vCardContent = [
     "BEGIN:VCARD",
     "VERSION:3.0",
     `FN:${esc(fullName)}`,
@@ -278,21 +282,37 @@ function downloadVCard(personalData, socialData) {
     `TEL;TYPE=WORK,VOICE:${esc(wa)}`,
     `EMAIL;TYPE=INTERNET,PREF:${esc(email)}`,
     `URL:${esc(url)}`,
-    `NOTE:${esc(noteParts.join("\n\n"))}`,
+    `NOTE:${esc(note)}`,
     "REV:" + new Date().toISOString(),
     "END:VCARD"
-  ];
+  ].join("\r\n");
 
-  const vCardContent = vCardLines.join("\r\n");
-  const blob = new Blob([vCardContent], { type: "text/vcard;charset=utf-8;" });
-  const downloadUrl = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = downloadUrl;
-  link.setAttribute("download", `${fullName.replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_KDS.vcf`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+  const fileName = `${fullName.replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_KDS.vcf`;
+
+  try {
+    const blob = new Blob([vCardContent], { type: "text/vcard;charset=utf-8" });
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 2000);
+    return true;
+  } catch (error) {
+    // Fallback for browsers that reject Blob downloads.
+    const dataUrl = "data:text/vcard;charset=utf-8," + encodeURIComponent(vCardContent);
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = fileName;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    return true;
+  }
 }
 
 // 7. SVG ICONS DICTIONARY
