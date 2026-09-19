@@ -232,11 +232,8 @@ function normalizeUrl(rawUrl) {
 }
 
 // 6. VCARD GENERATOR (RFC 2426 Compliant)
-function downloadVCard(personalData, socialData) {
+function downloadVCard(personalData) {
   const p = personalData || DEFAULT_SITE_DATA.personal;
-  const socials = Array.isArray(socialData) && socialData.length
-    ? socialData
-    : (DEFAULT_SITE_DATA.personalSocials || []);
   const fullName = (p.name || "Shofikul Islam Samim").trim();
   const org = p.company || "Khan Digital Solution";
   const title = p.designation || "Owner & CEO";
@@ -244,6 +241,7 @@ function downloadVCard(personalData, socialData) {
   const wa = p.whatsappFormatted ? `+${p.whatsappFormatted}` : phone;
   const email = p.email || "samim.khanmiyaa@gmail.com";
   const url = normalizeUrl(p.website) || window.location.href;
+  const note = (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " ");
 
   const nameParts = fullName.split(/\s+/);
   const familyName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
@@ -254,18 +252,6 @@ function downloadVCard(personalData, socialData) {
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
     .replace(/\r?\n/g, "\\n");
-
-  const activeSocials = socials
-    .filter(item => item && item.active !== false && item.url)
-    .map(item => ({ platform: item.platform || "Social", url: normalizeUrl(item.url) }))
-    .filter(item => item.url);
-
-  const socialNote = activeSocials.map(item => `${item.platform}: ${item.url}`).join("\n");
-  const noteParts = [
-    (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " "),
-    socialNote ? `Social Profiles:\n${socialNote}` : ""
-  ].filter(Boolean);
-  const note = noteParts.join("\n\n");
 
   const vCardLines = [
     "BEGIN:VCARD",
@@ -279,7 +265,6 @@ function downloadVCard(personalData, socialData) {
     `EMAIL;TYPE=INTERNET,PREF:${esc(email)}`,
     `URL:${esc(url)}`,
     `NOTE:${esc(note)}`,
-    ...activeSocials.map(item => `X-SOCIALPROFILE;TYPE=${esc(item.platform)}:${esc(item.url)}`),
     "REV:" + new Date().toISOString(),
     "END:VCARD"
   ];
@@ -289,7 +274,7 @@ function downloadVCard(personalData, socialData) {
   const downloadUrl = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = downloadUrl;
-  link.setAttribute("download", `${fullName.replace(/[^\w\s-]/g, "").replace(/\s+/g, "_")}_KDS.vcf`);
+  link.setAttribute("download", `${fullName.replace(/[^\\w\\s-]/g, "").replace(/\\s+/g, "_")}_KDS.vcf`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
