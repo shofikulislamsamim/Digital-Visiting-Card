@@ -108,32 +108,18 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
-  // Live PDF: generates a real PDF with clickable phone, WhatsApp, email and social links.
-  const btnLivePdf = document.getElementById("btnLivePdf");
-  if (btnLivePdf) {
-    btnLivePdf.addEventListener("click", () => generateLivePdf(data));
-  }
-
-  // Save Contact + Live PDF: one click downloads both files.
-  // vCard starts immediately; PDF generation follows from the same user action.
-  const handleVCardDownload = async (e) => {
+  // Save Contact: downloads a complete vCard containing contact details and social links.
+  const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
     window.KDS.downloadVCard(p, data.personalSocials || []);
-    showConnectModal(data);
-  };
-
-  const handleContactAndPdfDownload = async (e) => {
-    if (e) e.preventDefault();
-    window.KDS.downloadVCard(p);
-    await generateLivePdf(data, { silent: true });
-    showToast("Contact (.vcf) and Live PDF downloaded.");
+    showToast("Contact saved. You can import it into your phone Contacts.");
     showConnectModal(data);
   };
 
   setupConnectModal();
 
   if (btnVCard) btnVCard.addEventListener("click", handleVCardDownload);
-  if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleContactAndPdfDownload);
+  if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleVCardDownload);
 
   // Render Personal Social Links (Icons only, no raw URLs)
   const socialsContainer = document.getElementById("personalSocialsList");
@@ -417,7 +403,7 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
   }
 }
 
-async function generateLivePdf(data, options = {}) {
+) {
   try {
     const jsPDF = window.jspdf?.jsPDF;
     const html2canvas = window.html2canvas;
