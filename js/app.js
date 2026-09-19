@@ -368,7 +368,9 @@ function showConnectModal(data) {
   ].filter(item => item.url);
 
   options.innerHTML = items.map(item => {
-    const icon = item.icon === "instagram" ? window.KDS.getSvgIcon("instagramOriginal", "connect-brand-icon") : window.KDS.getSvgIcon(item.icon, "connect-brand-icon");
+    const icon = item.icon === "instagram"
+      ? `<svg class="connect-brand-icon" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="connectInstagramOfficialGradient" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDD55"/><stop offset=".3" stop-color="#FF543E"/><stop offset=".6" stop-color="#C837AB"/><stop offset="1" stop-color="#405DE6"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" fill="url(#connectInstagramOfficialGradient)"/><circle cx="12" cy="12" r="4.25" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.25" cy="6.75" r="1.25" fill="#fff"/></svg>`
+      : window.KDS.getSvgIcon(item.icon, "connect-brand-icon");
     return `<a class="connect-option" href="${escapeHtml(window.KDS.normalizeUrl(item.url))}" target="_blank" rel="noopener noreferrer">
       <span class="connect-option-icon" data-platform="${item.icon}">${icon}</span>
       <span class="connect-option-copy">
