@@ -108,22 +108,6 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
-  // Save Contact: downloads a complete vCard containing contact details and social links.
-  const handleVCardDownload = (e) => {
-    if (e) e.preventDefault();
-    try {
-      const saved = window.KDS.downloadVCard(p, data.personalSocials || []);
-      if (saved) showToast("vCard downloaded successfully. Import it into your phone Contacts.");
-    } catch (error) {
-      console.error("vCard download failed:", error);
-      showToast("vCard download failed. Please try again.");
-    }
-  };
-
-  setupConnectModal();
-
-  if (btnVCard) btnVCard.addEventListener("click", handleVCardDownload);
-  if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleVCardDownload);
 
   // Render Personal Social Links (Icons only, no raw URLs)
   const socialsContainer = document.getElementById("personalSocialsList");
