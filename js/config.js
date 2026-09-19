@@ -232,8 +232,11 @@ function normalizeUrl(rawUrl) {
 }
 
 // 6. VCARD GENERATOR (RFC 2426 Compliant)
-function downloadVCard(personalData) {
+function downloadVCard(personalData, socialData) {
   const p = personalData || DEFAULT_SITE_DATA.personal;
+  const socials = Array.isArray(socialData) && socialData.length
+    ? socialData
+    : (DEFAULT_SITE_DATA.personalSocials || []);
   const fullName = (p.name || "Shofikul Islam Samim").trim();
   const org = p.company || "Khan Digital Solution";
   const title = p.designation || "Owner & CEO";
@@ -241,7 +244,6 @@ function downloadVCard(personalData) {
   const wa = p.whatsappFormatted ? `+${p.whatsappFormatted}` : phone;
   const email = p.email || "samim.khanmiyaa@gmail.com";
   const url = normalizeUrl(p.website) || window.location.href;
-  const note = (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " ");
 
   const nameParts = fullName.split(/\s+/);
   const familyName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
@@ -252,6 +254,18 @@ function downloadVCard(personalData) {
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
     .replace(/\r?\n/g, "\\n");
+
+  // Keep social profiles inside the vCard, but do not create clickable social buttons/actions.
+  const activeSocials = socials
+    .filter(item => item && item.active !== false && item.url)
+    .map(item => ({ platform: item.platform || "Social", url: normalizeUrl(item.url) }))
+    .filter(item => item.url);
+
+  const socialNote = activeSocials.map(item => `${item.platform}: ${item.url}`).join("\n");
+  const noteParts = [
+    (p.bio || "Khan Digital Solution – Digital Visiting Card").replace(/\r?\n/g, " "),
+    socialNote ? `Social Profiles:\n${socialNote}` : ""
+  ].filter(Boolean);
 
   const vCardLines = [
     "BEGIN:VCARD",
@@ -264,7 +278,7 @@ function downloadVCard(personalData) {
     `TEL;TYPE=WORK,VOICE:${esc(wa)}`,
     `EMAIL;TYPE=INTERNET,PREF:${esc(email)}`,
     `URL:${esc(url)}`,
-    `NOTE:${esc(note)}`,
+    `NOTE:${esc(noteParts.join("\n\n"))}`,
     "REV:" + new Date().toISOString(),
     "END:VCARD"
   ];
