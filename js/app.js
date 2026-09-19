@@ -268,13 +268,27 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
   }
 
   const renderQr = () => {
+    const drawFallback = () => {
+      const frame = canvas.parentElement;
+      if (!frame) return false;
+      const img = document.createElement("img");
+      img.width = 220;
+      img.height = 220;
+      img.alt = "QR Code";
+      img.loading = "eager";
+      img.decoding = "sync";
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(currentUrl)}`;
+      img.dataset.qrUrl = currentUrl;
+      canvas.replaceWith(img);
+      return true;
+    };
+
     if (typeof QRCode === "undefined" || typeof QRCode.toCanvas !== "function") {
-      console.error("[KDS] QRCode library is not available.");
-      return false;
+      console.warn("[KDS] QR library unavailable; using verified QR fallback.");
+      return drawFallback();
     }
 
     try {
-      // Clear any previous QR before generating a new one.
       const ctx = canvas.getContext("2d");
       if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -282,18 +296,19 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
         width: 220,
         margin: 2,
         errorCorrectionLevel: "H",
-        color: {
-          dark: "#0f172a",
-          light: "#ffffff"
-        }
+        color: { dark: "#0f172a", light: "#ffffff" }
       }, (error) => {
-        if (error) console.error("[KDS] QR generation failed:", error);
+        if (error) {
+          console.error("[KDS] QR generation failed:", error);
+          drawFallback();
+          return;
+        }
+        canvas.dataset.qrUrl = currentUrl;
       });
-      canvas.dataset.qrUrl = currentUrl;
       return true;
     } catch (err) {
       console.error("[KDS] QR generation failed:", err);
-      return false;
+      return drawFallback();
     }
   };
 
