@@ -167,6 +167,12 @@ function deepMergeSiteData(loaded) {
     personal: Object.assign({}, DEFAULT_SITE_DATA.personal, loaded.personal || {}),
     business: Object.assign({}, DEFAULT_SITE_DATA.business, loaded.business || {}),
     settings: Object.assign({}, DEFAULT_SITE_DATA.settings, loaded.settings || {}),
+    branding: Object.assign({
+      logoUrl: "",
+      cardLogoUrl: "",
+      faviconUrl: "",
+      adminLogoUrl: ""
+    }, loaded.branding || (loaded.settings && loaded.settings.branding) || {}),
     personalSocials: sanitizeSocials(loaded.personalSocials, DEFAULT_SITE_DATA.personalSocials),
     businessSocials: sanitizeSocials(loaded.businessSocials, DEFAULT_SITE_DATA.businessSocials),
     services: Array.isArray(loaded.services) && loaded.services.length > 0 
@@ -179,39 +185,33 @@ function deepMergeSiteData(loaded) {
 
 async function getSiteData() {
   const client = getSupabaseClient();
-  if (client) {
-    try {
-      const { data, error } = await client
-        .from("site_data")
-        .select("data, updated_at")
-        .eq("id", "kds_main")
-        .maybeSingle();
-
-      if (!error && data && data.data) {
-        const mergedData = deepMergeSiteData(data.data);
-        // Cache copy locally for instant subsequent loads and offline access
-        localStorage.setItem("KDS_LOCAL_DATA", JSON.stringify(mergedData));
-        return mergedData;
-      } else if (error) {
-        console.warn("[KDS] Supabase fetch error, falling back to cache:", error.message);
-      }
-    } catch (err) {
-      console.warn("[KDS] Network error fetching from Supabase:", err);
-    }
+  if (!client) {
+    console.error("[KDS] Supabase is not configured. Public data cannot be synced.");
+    return JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
   }
 
-  // Fallback to local storage or defaults
-  const local = localStorage.getItem("KDS_LOCAL_DATA");
-  if (local) {
-    try {
-      const parsed = JSON.parse(local);
-      return deepMergeSiteData(parsed);
-    } catch (e) {
-      console.error("[KDS] Failed to parse local cached data:", e);
-    }
-  }
+  try {
+    const { data, error } = await client
+      .from("site_data")
+      .select("data, updated_at")
+      .eq("id", "kds_main")
+      .maybeSingle();
 
-  return JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+    if (error) {
+      console.error("[KDS] Supabase fetch error:", error.message);
+      return JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+    }
+
+    if (data && data.data) {
+      return deepMergeSiteData(data.data);
+    }
+
+    console.warn("[KDS] No cloud site_data record found; using defaults.");
+    return JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+  } catch (err) {
+    console.error("[KDS] Network error fetching from Supabase:", err);
+    return JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+  }
 }
 
 // 5. URL NORMALIZATION HELPER
