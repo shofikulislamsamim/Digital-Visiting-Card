@@ -247,18 +247,25 @@ function downloadVCard(personalData) {
   const familyName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
   const givenName = nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : fullName;
 
+  // Escape vCard text so company/title/name are preserved correctly in Contacts.
+  const esc = (value) => String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r?\n/g, "\\n");
+
   const vCardLines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    `FN:${fullName}`,
-    `N:${familyName};${givenName};;;`,
-    `ORG:${org}`,
-    `TITLE:${title}`,
-    `TEL;TYPE=CELL,VOICE:${phone}`,
-    `TEL;TYPE=WORK,VOICE:${wa}`,
-    `EMAIL;TYPE=INTERNET,PREF:${email}`,
-    `URL:${url}`,
-    `NOTE:${note}`,
+    `FN:${esc(fullName)}`,
+    `N:${esc(familyName)};${esc(givenName)};;;`,
+    `ORG:${esc(org)}`,
+    `TITLE:${esc(title)}`,
+    `TEL;TYPE=CELL,VOICE:${esc(phone)}`,
+    `TEL;TYPE=WORK,VOICE:${esc(wa)}`,
+    `EMAIL;TYPE=INTERNET,PREF:${esc(email)}`,
+    `URL:${esc(url)}`,
+    `NOTE:${esc(note)}`,
     "REV:" + new Date().toISOString(),
     "END:VCARD"
   ];
