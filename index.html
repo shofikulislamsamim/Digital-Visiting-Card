@@ -93,6 +93,18 @@
         Save Contact to Phone (.vcf)
       </button>
 
+      <!-- Post-save connection options -->
+      <div class="connect-modal-backdrop hidden" id="connectModal" role="dialog" aria-modal="true" aria-labelledby="connectModalTitle">
+        <div class="connect-modal-card">
+          <button type="button" class="connect-modal-close" id="connectModalClose" aria-label="Close">×</button>
+          <div class="connect-success-icon">✓</div>
+          <h2 id="connectModalTitle">Contact Saved!</h2>
+          <p class="connect-modal-subtitle">Save হয়েছে। এখন চাইলে আমার সাথে সরাসরি Connect করুন।</p>
+          <div class="connect-options" id="connectOptions"></div>
+          <button type="button" class="connect-close-btn" id="connectModalDone">Done</button>
+        </div>
+      </div>
+
       <!-- Social Media Links (Icons Only, No Raw URLs) -->
       <div class="socials-section">
         <div class="section-title">Connect on Social Media</div>
@@ -156,7 +168,7 @@
   </div>
 
   <!-- Scripts (Relative Paths) -->
-  <script src="./js/config.js?v=20260919-brand2"></script>
-  <script src="./js/app.js?v=20260919-cloud1"></script>
+  <script src="./js/config.js?v=20260919-connect1"></script>
+  <script src="./js/app.js?v=20260919-connect1"></script>
 </body>
 </html>
