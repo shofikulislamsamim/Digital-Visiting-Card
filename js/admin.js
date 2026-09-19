@@ -323,6 +323,11 @@ function populateAllForms(data) {
   setValue("admPersonalWhatsApp", p.whatsapp);
   setValue("admPersonalEmail", p.email);
   setValue("admPersonalBio", p.bio);
+
+  const coverUrl = branding.coverUrl || "";
+  setValue("admProfileCoverUrl", coverUrl);
+  const coverThumb = document.getElementById("admProfileCoverPreview");
+  if (coverThumb) coverThumb.src = coverUrl || "./assets/placeholders/logo.jpg";
   setValue("admPersonalPhotoUrl", p.photoUrl);
 
   const personalThumb = document.getElementById("admPersonalPhotoPreview");
@@ -1220,7 +1225,8 @@ async function saveAllChanges() {
         logoUrl: getValue("admBrandLogoUrl") || getValue("admBusinessLogoUrl") || "",
         cardLogoUrl: getValue("admCardLogoUrl") || getValue("admBrandLogoUrl") || "",
         faviconUrl: getValue("admFaviconUrl") || getValue("admBrandLogoUrl") || "",
-        adminLogoUrl: getValue("admAdminLogoUrl") || getValue("admBrandLogoUrl") || ""
+        adminLogoUrl: getValue("admAdminLogoUrl") || getValue("admBrandLogoUrl") || "",
+        coverUrl: getValue("admProfileCoverUrl") || ""
       },
       settings
     };
