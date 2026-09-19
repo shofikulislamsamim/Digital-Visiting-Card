@@ -89,52 +89,10 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
-  // Save Contact: on Android, open the native Contacts "create contact" screen
-  // with the fields pre-filled. Other platforms keep the vCard fallback.
+  // Save Contact: use the universal vCard method.
+  // This is the most reliable web-based option across Android, iPhone, and desktop.
   const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
-
-    const fullName = String(p.name || data.name || "Shofikul Islam Samim").trim();
-    const company = String(p.company || data.company || "Khan Digital Solution").trim();
-    const title = String(p.designation || p.title || data.designation || "Owner & CEO").trim();
-    const phone = String(p.phoneFormatted || p.phone || "01744188460").trim();
-    const email = String(p.email || "samim.khanmiyaa@gmail.com").trim();
-    const website = String(data.website || window.location.href || "").trim();
-    const note = String(data.tagline || "Your Growth, Our Mission").trim();
-
-    const isAndroid = /Android/i.test(navigator.userAgent || "");
-
-    if (isAndroid) {
-      const add = (key, value) => value ? `S.${key}=${encodeURIComponent(value)};` : "";
-      // Chrome's documented web-to-app mechanism is an intent URI launched
-      // from a real anchor click. Do not use window.location for this flow.
-      const intentUrl =
-        "intent://contacts/insert#Intent;" +
-        "scheme=content;" +
-        "action=android.intent.action.INSERT;" +
-        "type=vnd.android.cursor.dir/contact;" +
-        add("name", fullName) +
-        add("phone", phone) +
-        add("email", email) +
-        add("company", company) +
-        add("job_title", title) +
-        add("notes", note) +
-        add("website", website) +
-        "end";
-
-      const intentLink = document.createElement("a");
-      intentLink.href = intentUrl;
-      intentLink.rel = "noopener";
-      intentLink.style.display = "none";
-      document.body.appendChild(intentLink);
-      intentLink.click();
-      setTimeout(() => intentLink.remove(), 1500);
-      setTimeout(() => showConnectModal(data), 1800);
-      return;
-    }
-
-    // iPhone/iPad/desktop browsers cannot reliably write to the native
-    // Contacts database from a webpage, so retain the universal vCard fallback.
     window.KDS.downloadVCard(p);
     showConnectModal(data);
   };
