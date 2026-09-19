@@ -156,7 +156,7 @@ function renderBusinessPage(data) {
   const b = data.business || {};
 
   // Use the same cover photo system as the personal profile.
-  const coverUrl = data?.branding?.coverUrl || "";
+  const coverUrl = data?.branding?.businessCoverUrl || data?.branding?.coverUrl || "";
   const cover = document.getElementById("businessProfileCover");
   if (cover) {
     cover.innerHTML = "";
@@ -584,7 +584,7 @@ function renderBusinessPage(data) {
   const b = data.business || {};
 
   // Use the same cover photo system as the personal profile.
-  const coverUrl = data?.branding?.coverUrl || "";
+  const coverUrl = data?.branding?.businessCoverUrl || data?.branding?.coverUrl || "";
   const cover = document.getElementById("businessProfileCover");
   if (cover) {
     cover.innerHTML = "";
