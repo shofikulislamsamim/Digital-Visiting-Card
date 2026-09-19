@@ -274,14 +274,16 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  padding: 3px 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(2, 132, 199, 0.10));
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  padding: 4px 14px;
   border-radius: var(--radius-full);
   margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.16);
+  letter-spacing: 0.01em;
 }
 
 .founder-bio {
