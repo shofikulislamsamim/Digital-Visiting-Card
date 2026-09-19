@@ -1418,24 +1418,24 @@ body {
 .connect-option-icon[data-platform="instagram"] { color:#fff; background:rgba(255,255,255,.05); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Instagram keeps the complete camera mark while matching the white icon style */
+/* Connect Instagram uses the original multicolor Instagram logo */
 .connect-option-icon[data-platform="instagram"] {
   color: #fff !important;
-  background: rgba(255,255,255,.05) !important;
+  background: linear-gradient(135deg, #ffdd55 0%, #ff543e 32%, #c837ab 62%, #405de6 100%) !important;
 }
 .connect-option-icon[data-platform="instagram"] svg {
   fill: none !important;
-  stroke: currentColor !important;
+  stroke: none !important;
 }
 .connect-option-icon[data-platform="instagram"] svg rect {
-  fill: none !important;
-  stroke: currentColor !important;
+  fill: url(#instagramGradient) !important;
+  stroke: none !important;
 }
 .connect-option-icon[data-platform="instagram"] svg circle:first-of-type {
   fill: none !important;
-  stroke: currentColor !important;
+  stroke: #fff !important;
 }
 .connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
-  fill: currentColor !important;
+  fill: #fff !important;
   stroke: none !important;
 }
