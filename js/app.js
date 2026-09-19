@@ -55,7 +55,7 @@ function applySiteBranding(data) {
 function renderPersonalPage(data) {
   applySiteBranding(data);
   const p = data.personal || {};
-  const coverUrl = data?.branding?.coverUrl || "";
+  const coverUrl = data?.branding?.businessCoverUrl || data?.branding?.coverUrl || "";
   const cover = document.getElementById("personalProfileCover");
   if (cover) {
     cover.innerHTML = "";
