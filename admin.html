@@ -262,6 +262,24 @@
       <div class="service-card" style="padding: 24px;">
         <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;">Personal Profile Information <span class="bengali-hint">(ব্যক্তিগত তথ্য)</span></h3>
 
+        <!-- Facebook-style Cover Photo Upload Box -->
+        <div class="form-group">
+          <label class="form-label">Profile Cover Photo <span class="bengali-hint">(কভার ফটো)</span></label>
+          <div class="image-upload-box">
+            <div class="image-preview-row">
+              <img id="admProfileCoverPreview" src="./assets/placeholders/logo.jpg" alt="Cover Preview" class="preview-cover-thumb" />
+              <div class="file-input-wrapper">
+                <input type="file" id="admProfileCoverFile" accept="image/*" class="form-input" style="padding: 6px;" />
+                <span style="font-size: 0.78rem; color: var(--text-subtle);">Facebook-style cover image. Recommended: wide landscape image.</span>
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.75rem;">Direct Cover URL (Optional override):</label>
+              <input type="text" id="admProfileCoverUrl" class="form-input" placeholder="Uploaded cover URL" />
+            </div>
+          </div>
+        </div>
+
         <!-- Profile Photo Upload Box -->
         <div class="form-group">
           <label class="form-label">Profile Photo <span class="bengali-hint">(প্রোফাইল ছবি)</span></label>
@@ -626,6 +644,6 @@
 
   <!-- Scripts (Relative Paths) -->
   <script src="./js/config.js?v=20260919-instagramfix5"></script>
-  <script src="./js/admin.js?v=20260919-cloud1"></script>
+  <script src="./js/admin.js?v=20260919-profilecover1-cloud1"></script>
 </body>
 </html>
