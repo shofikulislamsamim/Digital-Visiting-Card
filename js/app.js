@@ -106,8 +106,11 @@ function renderPersonalPage(data) {
 
     if (isAndroid) {
       const add = (key, value) => value ? `S.${key}=${encodeURIComponent(value)};` : "";
+      // Android Chrome requires a valid intent:// URI with a host/path.
+      // ACTION_INSERT + Contacts MIME type is the documented Android contact flow.
       const intentUrl =
-        "intent:#Intent;" +
+        "intent://contacts/insert#Intent;" +
+        "scheme=content;" +
         "action=android.intent.action.INSERT;" +
         "type=vnd.android.cursor.dir/contact;" +
         add("name", fullName) +
@@ -115,13 +118,12 @@ function renderPersonalPage(data) {
         add("email", email) +
         add("company", company) +
         add("job_title", title) +
-        add("website", website) +
         add("notes", note) +
+        add("website", website) +
         "end";
 
-      // Android opens the Contacts app with these fields pre-filled.
       window.location.href = intentUrl;
-      setTimeout(() => showConnectModal(data), 900);
+      setTimeout(() => showConnectModal(data), 1500);
       return;
     }
 
