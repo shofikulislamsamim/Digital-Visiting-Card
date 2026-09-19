@@ -27,49 +27,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function initAdminApp() {
   const client = window.KDS.getSupabaseClient();
 
-  // If Supabase is not configured yet, show helper notice
-  const supabaseNotice = document.getElementById("authSupabaseNotice");
-  if (supabaseNotice) {
-    if (!window.KDS.isSupabaseConfigured()) {
-      supabaseNotice.classList.remove("hidden");
-    } else {
-      supabaseNotice.classList.add("hidden");
-    }
-  }
-
-  // Bind Auth Forms and ensure Service modal is strictly closed on start
+  // Never open the dashboard without a real Supabase Auth session.
   setupAuthEventListeners();
   closeServiceModal();
 
-  // If the user previously clicked logout explicitly in this session, show login screen
-  const isExplicitlyLoggedOut = sessionStorage.getItem("KDS_ADMIN_LOGGED_OUT") === "true";
-  if (isExplicitlyLoggedOut) {
+  if (!client) {
     showAuthView();
+    showToast("Admin security is unavailable until Supabase is configured.", "error");
     return;
   }
 
-  // Check if active Supabase session exists
-  if (client) {
-    try {
-      const { data: { session }, error } = await client.auth.getSession();
-      if (session && session.user) {
-        await handleAuthenticatedUser(session.user);
-        setupAuthChangeListener(client);
-        return;
-      }
-    } catch (err) {
-      console.warn("[KDS Admin] Error inspecting Supabase session:", err);
+  try {
+    const { data: { session } } = await client.auth.getSession();
+    if (session?.user) {
+      await handleAuthenticatedUser(session.user);
+    } else {
+      showAuthView();
     }
+  } catch (err) {
+    console.warn("[KDS Admin] Error inspecting Supabase session:", err);
+    showAuthView();
   }
 
-  // By default: Open the MAIN ADMIN DASHBOARD first
-  adminState.user = { email: "samim.khanmiyaa@gmail.com" };
-  adminState.isAuthorized = true;
-  await loadDashboard();
-
-  if (client) {
-    setupAuthChangeListener(client);
-  }
+  setupAuthChangeListener(client);
 }
 
 function setupAuthChangeListener(client) {
@@ -96,41 +76,35 @@ let isDashboardInitialized = false;
  */
 async function handleAuthenticatedUser(user) {
   if (isDashboardLoading) return;
+
   adminState.user = user;
   const client = window.KDS.getSupabaseClient();
+  if (!client || !user?.id) {
+    showAuthView();
+    return;
+  }
+
   const normalizedEmail = (user.email || "").toLowerCase().trim();
-  const WHITELIST_ADMINS = [
-    "samim.khanmiyaa@gmail.com"
-  ];
+  let isAuthorized = false;
 
-  // Verify Admin Authorization via admin_users table or whitelist check
-  let isAuthorized = WHITELIST_ADMINS.includes(normalizedEmail);
+  try {
+    // Authorization must come from the protected admin_users table.
+    const { data, error } = await client
+      .from("admin_users")
+      .select("email")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
 
-  if (!isAuthorized && client) {
-    try {
-      const { data, error } = await client
-        .from("admin_users")
-        .select("email")
-        .ilike("email", normalizedEmail)
-        .maybeSingle();
-
-      if (data && data.email) {
-        isAuthorized = true;
-      } else if (error) {
-        console.warn("[KDS Admin] Check admin_users error:", error.message);
-      }
-    } catch (err) {
-      console.warn("[KDS Admin] Error verifying admin role:", err);
+    if (!error && data?.email) {
+      isAuthorized = true;
     }
-  } else if (!client) {
-    // When in local mode without Supabase connection
-    isAuthorized = true;
+  } catch (err) {
+    console.warn("[KDS Admin] Error verifying admin role:", err);
   }
 
   if (!isAuthorized) {
     showToast("Access Denied: This account is not an authorized administrator.", "error");
-    if (client) await client.auth.signOut();
-    sessionStorage.setItem("KDS_ADMIN_LOGGED_OUT", "true");
+    await client.auth.signOut();
     showAuthView();
     return;
   }
@@ -212,29 +186,11 @@ function setupAuthEventListeners() {
       const client = window.KDS.getSupabaseClient();
 
       if (!client) {
-        // Supabase not configured: allow instant offline setup login
-        if (password.length >= 6) {
-          sessionStorage.removeItem("KDS_ADMIN_LOGGED_OUT");
-          adminState.user = { email: email || "samim.khanmiyaa@gmail.com" };
-          adminState.isAuthorized = true;
-          showToast("Signed in. Supabase credentials can be configured in Settings.", "success");
-          await loadDashboard();
-          if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = `Login to Dashboard`;
-          }
-          return;
-        } else {
-          if (errorBox) {
-            errorBox.textContent = "Password must be at least 6 characters.";
-            errorBox.classList.remove("hidden");
-          }
-          if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = `Login to Dashboard`;
-          }
-          return;
+        if (errorBox) {
+          errorBox.textContent = "Secure login is unavailable. Please configure Supabase.";
+          errorBox.classList.remove("hidden");
         }
+        return;
       }
 
       try {
