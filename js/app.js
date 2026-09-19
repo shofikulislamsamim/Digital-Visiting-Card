@@ -89,11 +89,14 @@ function renderPersonalPage(data) {
   if (btnWhatsApp) btnWhatsApp.href = `https://wa.me/${waClean.startsWith("88") ? waClean : "88" + waClean.replace(/^0/, "")}`;
   if (btnEmail) btnEmail.href = `mailto:${emailAddr}`;
 
-  // Save Contact / vCard handler
+  // Save Contact / vCard handler + post-save connection options
   const handleVCardDownload = (e) => {
     if (e) e.preventDefault();
     window.KDS.downloadVCard(p);
+    showConnectModal(data);
   };
+
+  setupConnectModal();
 
   if (btnVCard) btnVCard.addEventListener("click", handleVCardDownload);
   if (btnSaveContactMain) btnSaveContactMain.addEventListener("click", handleVCardDownload);
@@ -325,6 +328,56 @@ function initQrCode(canvasId, downloadBtnId, shareBtnId, shareTitle, explicitUrl
       }
     });
   }
+}
+
+function setupConnectModal() {
+  const modal = document.getElementById("connectModal");
+  if (!modal || modal.dataset.ready === "1") return;
+  const close = () => modal.classList.add("hidden");
+  document.getElementById("connectModalClose")?.addEventListener("click", close);
+  document.getElementById("connectModalDone")?.addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+  modal.dataset.ready = "1";
+}
+
+function showConnectModal(data) {
+  const modal = document.getElementById("connectModal");
+  const options = document.getElementById("connectOptions");
+  if (!modal || !options) return;
+
+  const socials = Array.isArray(data?.personalSocials) ? data.personalSocials : [];
+  const byPlatform = {};
+  socials.forEach(item => {
+    const key = String(item?.platform || item?.icon || "").toLowerCase().trim();
+    if (item?.active !== false && item?.url && key) byPlatform[key] = item.url;
+  });
+
+  const p = data?.personal || {};
+  const phone = (p.whatsappFormatted || p.whatsapp || p.phoneFormatted || p.phone || "01744188460").replace(/[^\d]/g, "");
+  const waUrl = "https://wa.me/" + (phone.startsWith("88") ? phone : "88" + phone.replace(/^0/, ""));
+
+  const items = [
+    { keys:["facebook"], name:"Facebook", action:"Follow my Facebook", icon:"facebook", url:byPlatform.facebook },
+    { keys:["whatsapp"], name:"WhatsApp", action:"Chat with me", icon:"whatsapp", url:waUrl },
+    { keys:["youtube"], name:"YouTube", action:"Subscribe to my channel", icon:"youtube", url:byPlatform.youtube },
+    { keys:["tiktok"], name:"TikTok", action:"Follow me", icon:"tiktok", url:byPlatform.tiktok },
+    { keys:["instagram"], name:"Instagram", action:"Follow me", icon:"instagram", url:byPlatform.instagram },
+    { keys:["linkedin"], name:"LinkedIn", action:"Connect with me", icon:"linkedin", url:byPlatform.linkedin }
+  ].filter(item => item.url);
+
+  options.innerHTML = items.map(item => {
+    const icon = window.KDS.getSvgIcon(item.icon, "connect-brand-icon");
+    return `<a class="connect-option" href="${escapeHtml(window.KDS.normalizeUrl(item.url))}" target="_blank" rel="noopener noreferrer">
+      <span class="connect-option-icon" data-platform="${item.icon}">${icon}</span>
+      <span class="connect-option-copy">
+        <span class="connect-option-name">${escapeHtml(item.name)}</span>
+        <span class="connect-option-action">${escapeHtml(item.action)}</span>
+      </span>
+      <span class="connect-option-arrow">›</span>
+    </a>`;
+  }).join("");
+
+  if (items.length) modal.classList.remove("hidden");
 }
 
 function showToast(message) {
