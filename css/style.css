@@ -1466,3 +1466,48 @@ body {
     margin-top: -68px;
   }
 }
+
+/* Admin cover-photo uploader: compact Facebook-style preview */
+.admin-container .image-upload-box:has(#admProfileCoverPreview) {
+  padding: 14px;
+  gap: 12px;
+}
+.admin-container .image-upload-box:has(#admProfileCoverPreview) .image-preview-row {
+  align-items: center;
+  gap: 14px;
+}
+.admin-container .preview-cover-thumb {
+  display: block;
+  width: 220px;
+  height: 88px;
+  min-width: 220px;
+  max-width: 220px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  border: 1px solid var(--border-highlight);
+  background: var(--bg-surface);
+  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+}
+.admin-container .image-upload-box:has(#admProfileCoverPreview) .file-input-wrapper {
+  min-width: 0;
+}
+.admin-container .image-upload-box:has(#admProfileCoverPreview) .file-input-wrapper .form-input {
+  margin: 0 0 4px;
+  min-height: 40px;
+}
+.admin-container .image-upload-box:has(#admProfileCoverPreview) > div:last-child .form-input {
+  min-height: 40px;
+}
+@media (max-width: 640px) {
+  .admin-container .image-upload-box:has(#admProfileCoverPreview) .image-preview-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .admin-container .preview-cover-thumb {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 120px;
+  }
+}
