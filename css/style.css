@@ -1418,23 +1418,24 @@ body {
 .connect-option-icon[data-platform="instagram"] { color:#fff; background:rgba(255,255,255,.05); }
 .connect-option-icon[data-platform="linkedin"] { color:#0a66c2; background:rgba(10,102,194,.10); }
 
-/* Instagram uses the same monochrome treatment as the other social icons */
-.social-icon-link[data-platform="instagram"] svg,
-.social-icon-link.instagram svg,
+/* Instagram keeps the complete camera mark while matching the white icon style */
+.connect-option-icon[data-platform="instagram"] {
+  color: #fff !important;
+  background: rgba(255,255,255,.05) !important;
+}
 .connect-option-icon[data-platform="instagram"] svg {
   fill: none !important;
   stroke: currentColor !important;
-  color: inherit !important;
 }
-.social-icon-link[data-platform="instagram"] svg circle:last-of-type,
-.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
-  fill: currentColor !important;
-  stroke: none !important;
-}.connect-option-icon[data-platform="instagram"] svg rect,
-.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
-  fill: currentColor !important;
+.connect-option-icon[data-platform="instagram"] svg rect {
+  fill: none !important;
+  stroke: currentColor !important;
 }
 .connect-option-icon[data-platform="instagram"] svg circle:first-of-type {
   fill: none !important;
   stroke: currentColor !important;
+}
+.connect-option-icon[data-platform="instagram"] svg circle:last-of-type {
+  fill: currentColor !important;
+  stroke: none !important;
 }
