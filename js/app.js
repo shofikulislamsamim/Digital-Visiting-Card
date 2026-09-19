@@ -106,8 +106,8 @@ function renderPersonalPage(data) {
 
     if (isAndroid) {
       const add = (key, value) => value ? `S.${key}=${encodeURIComponent(value)};` : "";
-      // Android Chrome requires a valid intent:// URI with a host/path.
-      // ACTION_INSERT + Contacts MIME type is the documented Android contact flow.
+      // Chrome's documented web-to-app mechanism is an intent URI launched
+      // from a real anchor click. Do not use window.location for this flow.
       const intentUrl =
         "intent://contacts/insert#Intent;" +
         "scheme=content;" +
@@ -122,8 +122,14 @@ function renderPersonalPage(data) {
         add("website", website) +
         "end";
 
-      window.location.href = intentUrl;
-      setTimeout(() => showConnectModal(data), 1500);
+      const intentLink = document.createElement("a");
+      intentLink.href = intentUrl;
+      intentLink.rel = "noopener";
+      intentLink.style.display = "none";
+      document.body.appendChild(intentLink);
+      intentLink.click();
+      setTimeout(() => intentLink.remove(), 1500);
+      setTimeout(() => showConnectModal(data), 1800);
       return;
     }
 
