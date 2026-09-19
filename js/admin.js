@@ -1231,31 +1231,25 @@ async function saveAllChanges() {
 
     // 6. Save to Supabase Database if client is configured
     const client = window.KDS.getSupabaseClient();
-    let supabaseSuccess = false;
+    if (!client) {
+      throw new Error("Supabase is not connected. Cloud sync is required to save changes for everyone.");
+    }
 
-    if (client) {
-      const { error: upsertError } = await client
-        .from("site_data")
-        .upsert({
-          id: "kds_main",
-          data: updatedSiteData,
-          updated_at: new Date().toISOString()
-        });
+    const { error: upsertError } = await client
+      .from("site_data")
+      .upsert({
+        id: "kds_main",
+        data: updatedSiteData,
+        updated_at: new Date().toISOString()
+      });
 
-      if (upsertError) {
-        console.error("[KDS Admin] Supabase write error:", upsertError);
-        showToast("Changes saved locally, but cloud sync failed: " + upsertError.message, "error");
-      } else {
-        supabaseSuccess = true;
-      }
+    if (upsertError) {
+      console.error("[KDS Admin] Supabase write error:", upsertError);
+      throw new Error("Cloud sync failed: " + upsertError.message);
     }
 
     clearDirty();
-    if (supabaseSuccess) {
-      showToast("Changes saved and synced to Supabase successfully!", "success");
-    } else if (!client) {
-      showToast("Changes saved to local storage. (Connect Supabase in Settings for live cloud sync)", "success");
-    }
+    showToast("Changes saved to Supabase. Everyone will see the updated card.", "success");
     updateOverviewStats();
     renderQrPreviews();
 
